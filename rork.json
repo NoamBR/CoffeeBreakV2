@@ -1,0 +1,9 @@
+{
+  "apps": [
+    {
+      "name": "Blank App",
+      "path": "expo",
+      "framework": "react-native"
+    }
+  ]
+}
