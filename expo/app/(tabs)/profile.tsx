@@ -29,45 +29,27 @@ export default function ProfileScreen() {
   const isDark = themePreference === 'dark';
   const { user, reset: resetUser } = useUserStore();
   const { totalRewards } = useLoyaltyStore();
-  const { authenticateManager, authenticateWorker } = useAdminStore();
-  const [staffPinVisible, setStaffPinVisible] = useState(false);
-  const [staffPin, setStaffPin] = useState('');
-  const [staffRole, setStaffRole] = useState<'manager' | 'worker' | null>(null);
-  const staffPinRef = useRef<TextInput>(null);
+  const { authenticateStaff, isLoading: staffLoading, loginError } = useAdminStore();
+  const [staffLoginVisible, setStaffLoginVisible] = useState(false);
+  const [staffEmail, setStaffEmail] = useState('');
+  const [staffPassword, setStaffPassword] = useState('');
+  const passwordRef = useRef<TextInput>(null);
 
   const handleStaffLongPress = () => {
-    setStaffPin('');
-    setStaffRole(null);
-    setStaffPinVisible(true);
+    setStaffEmail('');
+    setStaffPassword('');
+    setStaffLoginVisible(true);
   };
 
-  const handleStaffLogin = (role: 'manager' | 'worker') => {
-    setStaffRole(role);
-    setStaffPin('');
-    setTimeout(() => staffPinRef.current?.focus(), 200);
-  };
-
-  const handleStaffPinSubmit = () => {
-    if (staffRole === 'manager') {
-      if (authenticateManager(staffPin)) {
-        setStaffPinVisible(false);
-        setStaffPin('');
-        setStaffRole(null);
-        setTimeout(() => router.push('/admin'), 100);
-      } else {
-        setStaffPin('');
-        Alert.alert('קוד שגוי', 'קוד המנהל אינו נכון.');
-      }
-    } else if (staffRole === 'worker') {
-      if (authenticateWorker(staffPin)) {
-        setStaffPinVisible(false);
-        setStaffPin('');
-        setStaffRole(null);
-        setTimeout(() => router.push('/worker'), 100);
-      } else {
-        setStaffPin('');
-        Alert.alert('קוד שגוי', 'קוד העובד אינו נכון.');
-      }
+  const handleStaffLoginSubmit = async () => {
+    if (!staffEmail || !staffPassword) return;
+    const success = await authenticateStaff(staffEmail, staffPassword);
+    if (success) {
+      setStaffLoginVisible(false);
+      setStaffEmail('');
+      setStaffPassword('');
+      const role = useAdminStore.getState().currentRole;
+      setTimeout(() => router.push(role === 'manager' ? '/admin' : '/worker'), 100);
     }
   };
 
@@ -283,56 +265,54 @@ export default function ProfileScreen() {
         </View>
       </ScrollView>
 
-      {/* Staff Login Modal */}
-      <Modal visible={staffPinVisible} transparent animationType="fade" onRequestClose={() => setStaffPinVisible(false)}>
+      {/* Staff Login Modal — Email/Password (Supabase Auth) */}
+      <Modal visible={staffLoginVisible} transparent animationType="fade" onRequestClose={() => setStaffLoginVisible(false)}>
         <View style={styles.adminOverlay}>
           <View style={styles.adminModal}>
-            <Pressable style={styles.adminClose} onPress={() => { setStaffPinVisible(false); setStaffRole(null); }}>
+            <Pressable style={styles.adminClose} onPress={() => setStaffLoginVisible(false)}>
               <X size={24} color={colors.textSecondary} />
             </Pressable>
 
-            {!staffRole ? (
-              <>
-                <Lock size={36} color={colors.textPrimary} />
-                <Text style={styles.adminTitle}>כניסת צוות</Text>
-                <Pressable style={styles.adminSubmitBtn} onPress={() => handleStaffLogin('manager')}>
-                  <Text style={styles.adminSubmitText}>מנהל</Text>
-                </Pressable>
-                <Pressable style={[styles.adminSubmitBtn, { backgroundColor: colors.accent }]} onPress={() => handleStaffLogin('worker')}>
-                  <Text style={styles.adminSubmitText}>עובד</Text>
-                </Pressable>
-              </>
-            ) : (
-              <>
-                <Lock size={36} color={staffRole === 'manager' ? colors.textPrimary : colors.accent} />
-                <Text style={styles.adminTitle}>
-                  {staffRole === 'manager' ? 'קוד מנהל' : 'קוד עובד'}
-                </Text>
-                <TextInput
-                  ref={staffPinRef}
-                  style={styles.adminPinInput}
-                  value={staffPin}
-                  onChangeText={setStaffPin}
-                  keyboardType="number-pad"
-                  maxLength={4}
-                  secureTextEntry
-                  placeholder="••••"
-                  placeholderTextColor={colors.inactive}
-                  textAlign="center"
-                  onSubmitEditing={handleStaffPinSubmit}
-                />
-                <Pressable
-                  style={[styles.adminSubmitBtn, staffPin.length < 4 && { opacity: 0.4 }, staffRole === 'worker' && { backgroundColor: colors.accent }]}
-                  onPress={handleStaffPinSubmit}
-                  disabled={staffPin.length < 4}
-                >
-                  <Text style={styles.adminSubmitText}>כניסה</Text>
-                </Pressable>
-                <Pressable onPress={() => setStaffRole(null)}>
-                  <Text style={{ fontSize: 14, color: colors.textSecondary, marginTop: 8 }}>חזרה</Text>
-                </Pressable>
-              </>
-            )}
+            <Lock size={36} color={colors.textPrimary} />
+            <Text style={styles.adminTitle}>כניסת צוות</Text>
+
+            <TextInput
+              style={styles.adminEmailInput}
+              value={staffEmail}
+              onChangeText={setStaffEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+              placeholder="אימייל"
+              placeholderTextColor={colors.inactive}
+              textAlign="right"
+              returnKeyType="next"
+              onSubmitEditing={() => passwordRef.current?.focus()}
+            />
+            <TextInput
+              ref={passwordRef}
+              style={styles.adminEmailInput}
+              value={staffPassword}
+              onChangeText={setStaffPassword}
+              secureTextEntry
+              placeholder="סיסמה"
+              placeholderTextColor={colors.inactive}
+              textAlign="right"
+              returnKeyType="go"
+              onSubmitEditing={handleStaffLoginSubmit}
+            />
+
+            {loginError ? (
+              <Text style={{ fontSize: 13, color: colors.error, textAlign: 'center' }}>{loginError}</Text>
+            ) : null}
+
+            <Pressable
+              style={[styles.adminSubmitBtn, (!staffEmail || !staffPassword || staffLoading) && { opacity: 0.4 }]}
+              onPress={handleStaffLoginSubmit}
+              disabled={!staffEmail || !staffPassword || staffLoading}
+            >
+              <Text style={styles.adminSubmitText}>{staffLoading ? 'מתחבר...' : 'כניסה'}</Text>
+            </Pressable>
           </View>
         </View>
       </Modal>
@@ -691,19 +671,16 @@ const getStyles = (colors: ColorScheme) => StyleSheet.create({
     fontWeight: '800',
     color: colors.textPrimary,
   },
-  adminPinInput: {
-    fontSize: 32,
-    fontWeight: '800',
+  adminEmailInput: {
+    fontSize: 16,
     color: colors.textPrimary,
     backgroundColor: colors.background,
     borderRadius: 12,
-    paddingVertical: 16,
-    paddingHorizontal: 32,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     width: '100%',
-    letterSpacing: 12,
     borderWidth: 2,
     borderColor: colors.border,
-    textAlign: 'center',
   },
   adminSubmitBtn: {
     backgroundColor: colors.primary,

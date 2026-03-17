@@ -1,21 +1,13 @@
 import { View, Text, StyleSheet, ScrollView, Pressable, Dimensions } from 'react-native';
+import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Clock, Gift, Users, Sparkles, Tag } from 'lucide-react-native';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import type { ColorScheme } from '@/constants/colors';
 import { deals } from '@/data/deals';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = width - 80;
-
-const dealIcons = {
-  happy_hour: Clock,
-  birthday: Gift,
-  bring_friend: Users,
-  seasonal: Sparkles,
-  general: Tag,
-};
 
 export default function HeroBanner() {
   const router = useRouter();
@@ -31,29 +23,40 @@ export default function HeroBanner() {
       snapToInterval={CARD_WIDTH + 12}
       decelerationRate="fast"
     >
-      {featuredDeals.map((deal) => {
-        const Icon = dealIcons[deal.type];
-        return (
-          <Pressable
-            key={deal.id}
-            style={styles.card}
-            onPress={() => router.push(`/deal/${deal.id}`)}
-          >
+      {featuredDeals.map((deal) => (
+        <Pressable
+          key={deal.id}
+          style={styles.card}
+          onPress={() => router.push(`/deal/${deal.id}`)}
+        >
+          {deal.image ? (
+            <>
+              <Image
+                source={deal.image}
+                style={styles.cardImage}
+                contentFit="cover"
+              />
+              <LinearGradient
+                colors={['transparent', 'rgba(0,0,0,0.75)']}
+                style={styles.cardOverlay}
+              >
+                <Text style={styles.title} numberOfLines={1}>{deal.title}</Text>
+                <Text style={styles.subtitle} numberOfLines={2}>{deal.description}</Text>
+              </LinearGradient>
+            </>
+          ) : (
             <LinearGradient
               colors={[colors.primaryDark, colors.primary]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
-              style={styles.gradient}
+              style={styles.fallbackGradient}
             >
-              <View style={styles.iconCircle}>
-                <Icon size={20} color={colors.primary} />
-              </View>
               <Text style={styles.title} numberOfLines={1}>{deal.title}</Text>
               <Text style={styles.subtitle} numberOfLines={2}>{deal.description}</Text>
             </LinearGradient>
-          </Pressable>
-        );
-      })}
+          )}
+        </Pressable>
+      ))}
     </ScrollView>
   );
 }
@@ -65,23 +68,24 @@ const getStyles = (colors: ColorScheme) => StyleSheet.create({
   },
   card: {
     width: CARD_WIDTH,
+    height: 180,
     borderRadius: 14,
     overflow: 'hidden',
   },
-  gradient: {
-    padding: 18,
-    minHeight: 130,
-    justifyContent: 'flex-end',
+  cardImage: {
+    ...StyleSheet.absoluteFillObject,
+    width: '100%',
+    height: '100%',
   },
-  iconCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: colors.white,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 10,
-    alignSelf: 'flex-end',
+  cardOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'flex-end',
+    padding: 18,
+  },
+  fallbackGradient: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    padding: 18,
   },
   title: {
     fontSize: 17,
@@ -91,7 +95,7 @@ const getStyles = (colors: ColorScheme) => StyleSheet.create({
   },
   subtitle: {
     fontSize: 12,
-    color: colors.overlay,
+    color: 'rgba(255,255,255,0.85)',
     textAlign: 'right',
     marginTop: 4,
     lineHeight: 18,

@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { Image } from 'expo-image';
 import { useLocalSearchParams, Stack } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Clock, Gift, Users, Sparkles, Tag } from 'lucide-react-native';
@@ -34,16 +35,32 @@ export default function DealDetail() {
     <>
       <Stack.Screen options={{ title: deal.title }} />
       <ScrollView style={styles.wrapper} showsVerticalScrollIndicator={false}>
-        {/* Hero header with icon */}
-        <LinearGradient
-          colors={[colors.primaryDark, colors.primary]}
-          style={styles.hero}
-        >
-          <View style={styles.iconCircle}>
-            <Icon size={32} color={colors.primary} />
+        {/* Hero header with photo or gradient fallback */}
+        {deal.image ? (
+          <View style={styles.heroPhoto}>
+            <Image
+              source={deal.image}
+              style={styles.heroImage}
+              contentFit="cover"
+            />
+            <LinearGradient
+              colors={['transparent', 'rgba(0,0,0,0.7)']}
+              style={styles.heroOverlay}
+            >
+              <Text style={styles.heroTitle}>{deal.title}</Text>
+            </LinearGradient>
           </View>
-          <Text style={styles.heroTitle}>{deal.title}</Text>
-        </LinearGradient>
+        ) : (
+          <LinearGradient
+            colors={[colors.primaryDark, colors.primary]}
+            style={styles.hero}
+          >
+            <View style={styles.iconCircle}>
+              <Icon size={32} color={colors.primary} />
+            </View>
+            <Text style={styles.heroTitle}>{deal.title}</Text>
+          </LinearGradient>
+        )}
 
         <View style={styles.content}>
           <Text style={styles.description}>{deal.description}</Text>
@@ -79,6 +96,20 @@ const getStyles = (colors: ColorScheme) => StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  heroPhoto: {
+    height: 280,
+    position: 'relative',
+  },
+  heroImage: {
+    ...StyleSheet.absoluteFillObject,
+    width: '100%',
+    height: '100%',
+  },
+  heroOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'flex-end',
+    padding: 24,
+  },
   hero: {
     paddingTop: 32,
     paddingBottom: 28,
@@ -98,7 +129,10 @@ const getStyles = (colors: ColorScheme) => StyleSheet.create({
     fontSize: 22,
     fontWeight: '800',
     color: colors.white,
-    textAlign: 'center',
+    textAlign: 'right',
+    textShadowColor: 'rgba(0,0,0,0.4)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
   content: {
     padding: 24,

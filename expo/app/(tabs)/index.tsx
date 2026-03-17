@@ -1,4 +1,5 @@
 import { ScrollView, View, Text, StyleSheet, Pressable } from 'react-native';
+import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -43,7 +44,6 @@ export default function HomeScreen() {
           <SafeAreaView edges={['top']}>
             <View style={styles.headerContent}>
               <View style={styles.logoRow}>
-                <Coffee size={28} color={colors.white} />
                 <Text style={styles.logoText}>{storeInfo.nameHe}</Text>
               </View>
               <Text style={styles.greeting}>
@@ -157,6 +157,11 @@ const getStyles = (colors: ColorScheme) => StyleSheet.create({
     alignItems: 'center',
     gap: 8,
     marginBottom: 12,
+  },
+  logoImg: {
+    width: 36,
+    height: 36,
+    borderRadius: 8,
   },
   logoText: {
     fontSize: 24,

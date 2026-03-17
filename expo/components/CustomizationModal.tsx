@@ -14,12 +14,13 @@ import { Image } from 'expo-image';
 import * as Haptics from 'expo-haptics';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import type { ColorScheme } from '@/constants/colors';
-import { MenuItem, ItemCustomization, MilkType, SugarLevel, DrinkSize } from '@/types';
+import { MenuItem, ItemCustomization, MilkType, SugarLevel, DrinkSize, BreadType } from '@/types';
 import {
   getCustomizationConfig,
   milkOptions,
   sugarOptions,
   sizeOptions,
+  breadOptions,
   foodExtras,
 } from '@/data/customizations';
 import { useCartStore } from '@/stores/cartStore';
@@ -41,6 +42,7 @@ export default function CustomizationModal({ item, visible, onClose }: Props) {
   const [milkType, setMilkType] = useState<MilkType>('regular');
   const [sugarLevel, setSugarLevel] = useState<SugarLevel>('regular');
   const [size, setSize] = useState<DrinkSize>('small');
+  const [breadType, setBreadType] = useState<BreadType>('chalah');
   const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
   const [notes, setNotes] = useState('');
   const [quantity, setQuantity] = useState(1);
@@ -49,9 +51,17 @@ export default function CustomizationModal({ item, visible, onClose }: Props) {
 
   const totalPrice = useMemo(() => {
     let unit = item.price;
+    if (config.showMilk) {
+      const milkOpt = milkOptions.find((m) => m.value === milkType);
+      if (milkOpt) unit += milkOpt.priceAdd;
+    }
     if (config.showSize) {
       const sizeOpt = sizeOptions.find((s) => s.value === size);
       if (sizeOpt) unit += sizeOpt.priceAdd;
+    }
+    if (config.showBread) {
+      const breadOpt = breadOptions.find((b) => b.value === breadType);
+      if (breadOpt) unit += breadOpt.priceAdd;
     }
     if (config.showExtras) {
       for (const id of selectedExtras) {
@@ -60,7 +70,7 @@ export default function CustomizationModal({ item, visible, onClose }: Props) {
       }
     }
     return unit * quantity;
-  }, [item.price, size, selectedExtras, quantity, config]);
+  }, [item.price, milkType, size, breadType, selectedExtras, quantity, config]);
 
   const toggleExtra = (id: string) => {
     setSelectedExtras((prev) =>
@@ -75,6 +85,7 @@ export default function CustomizationModal({ item, visible, onClose }: Props) {
     if (config.showMilk) customization.milkType = milkType;
     if (config.showSugar) customization.sugarLevel = sugarLevel;
     if (config.showSize) customization.size = size;
+    if (config.showBread) customization.breadType = breadType;
     if (config.showExtras && selectedExtras.length > 0) customization.extras = selectedExtras;
     if (notes.trim()) customization.notes = notes.trim();
 
@@ -101,6 +112,7 @@ export default function CustomizationModal({ item, visible, onClose }: Props) {
     setMilkType('regular');
     setSugarLevel('regular');
     setSize('small');
+    setBreadType('chalah');
     setSelectedExtras([]);
     setNotes('');
     setQuantity(1);
@@ -144,6 +156,7 @@ export default function CustomizationModal({ item, visible, onClose }: Props) {
                         style={[styles.optionText, milkType === opt.value && styles.optionTextActive]}
                       >
                         {opt.label}
+                        {opt.priceAdd > 0 ? ` (+${formatPrice(opt.priceAdd)})` : ''}
                       </Text>
                     </Pressable>
                   ))}
@@ -186,6 +199,29 @@ export default function CustomizationModal({ item, visible, onClose }: Props) {
                     >
                       <Text
                         style={[styles.optionText, size === opt.value && styles.optionTextActive]}
+                      >
+                        {opt.label}
+                        {opt.priceAdd > 0 ? ` (+${formatPrice(opt.priceAdd)})` : ''}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
+              </View>
+            )}
+
+            {/* Bread */}
+            {config.showBread && (
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>סוג לחם</Text>
+                <View style={styles.optionGrid}>
+                  {breadOptions.map((opt) => (
+                    <Pressable
+                      key={opt.value}
+                      style={[styles.optionChip, breadType === opt.value && styles.optionChipActive]}
+                      onPress={() => setBreadType(opt.value)}
+                    >
+                      <Text
+                        style={[styles.optionText, breadType === opt.value && styles.optionTextActive]}
                       >
                         {opt.label}
                         {opt.priceAdd > 0 ? ` (+${formatPrice(opt.priceAdd)})` : ''}

@@ -5,6 +5,7 @@ import { useThemeColors } from '@/hooks/useThemeColors';
 import { menuItems, menuCategories } from '@/data/menu';
 import MenuItemCard from '@/components/MenuItem';
 import MenuSearchBar from '@/components/MenuSearchBar';
+import CategoryBanner from '@/components/CategoryBanner';
 import { MenuCategory } from '@/types';
 import { useFavoritesStore } from '@/stores/favoritesStore';
 import type { ColorScheme } from '@/constants/colors';
@@ -98,6 +99,7 @@ export default function MenuScreen() {
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => <MenuItemCard item={item} />}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
+        ListHeaderComponent={!searchText.trim() ? <CategoryBanner category={activeCategory} /> : null}
         ListEmptyComponent={
           <Text style={styles.emptyText}>
             {searchText.trim()

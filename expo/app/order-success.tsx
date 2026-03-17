@@ -21,6 +21,9 @@ export default function OrderSuccessScreen() {
     notes: string;
     total: string;
     discount: string;
+    paymentMethod: string;
+    transactionId: string;
+    last4: string;
   }>();
 
   const { items, clearCart, getSubtotal } = useCartStore();
@@ -72,6 +75,14 @@ export default function OrderSuccessScreen() {
         pickupTime: params.pickupTime || 'בהקדם האפשרי',
         notes: params.notes || undefined,
         status: 'placed',
+        payment: {
+          method: (params.paymentMethod as any) || 'at_register',
+          status: params.paymentMethod === 'credit_card' ? 'completed' : 'pending',
+          transactionId: params.transactionId || undefined,
+          last4: params.last4 || undefined,
+          paidAt: params.paymentMethod === 'credit_card' ? new Date().toISOString() : undefined,
+          amount: subtotal - discount,
+        },
       },
       user?.id
     );

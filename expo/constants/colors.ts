@@ -22,7 +22,7 @@ export type ColorScheme = {
 
 export const LightColors: ColorScheme = {
   primary: '#2563EB',
-  primaryDark: '#1E40AF',
+  primaryDark: '#1E3A8A',
   accent: '#3B82F6',
   accentLight: '#EFF6FF',
   background: '#F8FAFC',
@@ -30,16 +30,16 @@ export const LightColors: ColorScheme = {
   textPrimary: '#0F172A',
   textSecondary: '#64748B',
   success: '#4CAF50',
-  gold: '#F59E0B',
+  gold: '#E8B86D',
   border: '#E2E8F0',
   overlay: 'rgba(15,23,42,0.5)',
   white: '#FFFFFF',
   black: '#0F172A',
   error: '#DC2626',
   inactive: '#94A3B8',
-  highlight: '#3B82F6',
-  headerGradient: ['#1E40AF', '#2563EB'],
-  stampGradient: ['#2563EB', '#1E40AF'],
+  highlight: '#2563EB',
+  headerGradient: ['#1E3A8A', '#2563EB'],
+  stampGradient: ['#2563EB', '#1E3A8A'],
 };
 
 export const DarkColors: ColorScheme = {

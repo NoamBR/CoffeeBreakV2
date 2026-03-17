@@ -30,7 +30,7 @@ export default function VoucherCard({ voucher, onPress }: Props) {
   const Icon = voucherIcons[voucher.type] || Ticket;
   const isRedeemed = voucher.status === 'redeemed' || !!voucher.redeemedAt;
   const isExpired = voucher.status === 'expired';
-  const isPending = voucher.barcode.startsWith('LOCAL-');
+  const isPending = false;
   const isInactive = isRedeemed || isExpired;
 
   return (

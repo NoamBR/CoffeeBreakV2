@@ -1,26 +1,30 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { secureStorage } from '@/lib/secureStorage';
 import { Voucher, VoucherType } from '@/types';
 import * as vouchersService from '@/services/vouchersService';
 import { CreateVoucherParams } from '@/services/vouchersService';
 
-// ─── Local barcode generator (fallback for offline-created vouchers) ───
-function generateLocalBarcode(): string {
-  const a = Math.random().toString(36).substring(2, 6).toUpperCase();
-  const b = Math.random().toString(36).substring(2, 6).toUpperCase();
-  return `LOCAL-${a}-${b}`;
-}
+/**
+ * Create a local placeholder voucher pending server sync.
+ * Uses LOCAL- prefix to distinguish from server-generated barcodes.
+ * The real barcode is assigned server-side via create_voucher().
+ */
+function createVoucherLocal(type: VoucherType, title: string, description: string, value?: number): Voucher {
+  // Use crypto.getRandomValues for better entropy than Math.random
+  const bytes = new Uint8Array(8);
+  crypto.getRandomValues(bytes);
+  const hex = Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
 
-function createLocalVoucher(type: VoucherType, title: string, description: string, value?: number): Voucher {
   return {
-    id: Date.now().toString() + Math.random().toString(36).slice(2, 6),
+    id: `local-${Date.now()}-${hex.slice(0, 8)}`,
     type,
-    status: 'active',
+    status: 'pending',
     title,
     description,
     value,
-    barcode: generateLocalBarcode(),
+    barcode: `LOCAL-${hex.toUpperCase()}`, // Placeholder — replaced after server sync
+    source: inferSource(title),
     earnedAt: new Date().toISOString(),
   };
 }
@@ -89,9 +93,15 @@ export const useReferralStore = create<ReferralState>()(
         }
       },
 
-      generateCode: (userId: string) => {
+      generateCode: (_userId: string) => {
         if (get().referralCode) return;
-        const code = `CB${userId.slice(-4).toUpperCase()}`;
+        // Generate cryptographically strong referral code (6 alphanumeric chars)
+        // Previous: CB + last 4 hex of userId = 65K possibilities (brute-forceable)
+        // New: CB + 6 random chars from 36-char alphabet = ~2.2 billion possibilities
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        const bytes = new Uint8Array(6);
+        crypto.getRandomValues(bytes);
+        const code = 'CB' + Array.from(bytes).map(b => chars[b % chars.length]).join('');
         set({ referralCode: code });
       },
 
@@ -105,27 +115,9 @@ export const useReferralStore = create<ReferralState>()(
       // ─── Voucher actions (with server sync) ───────────────
 
       addVoucher: (type, title, description, value) => {
-        // 1. Optimistic local insert (immediate UI update)
-        const localVoucher = createLocalVoucher(type, title, description, value);
+        const voucher = createVoucherLocal(type, title, description, value);
         set((state) => ({
-          vouchers: [...state.vouchers, localVoucher],
-        }));
-
-        // 2. Queue for server creation
-        const source = inferSource(title);
-        set((state) => ({
-          pendingCreations: [
-            ...state.pendingCreations,
-            {
-              localId: localVoucher.id,
-              userId: '', // filled during sync
-              type,
-              title,
-              description,
-              value,
-              source,
-            },
-          ],
+          vouchers: [...state.vouchers, voucher],
         }));
       },
 
@@ -263,7 +255,7 @@ export const useReferralStore = create<ReferralState>()(
     }),
     {
       name: 'coffeebreak-referral',
-      storage: createJSONStorage(() => AsyncStorage),
+      storage: createJSONStorage(() => secureStorage),
       partialize: (state) => ({
         referralCount: state.referralCount,
         referralCode: state.referralCode,
