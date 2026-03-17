@@ -24,19 +24,20 @@ export default function MenuItemCard({ item }: Props) {
   // ── Add-to-cart animation state ──
   const [added, setAdded] = useState(false);
   const btnScale = useRef(new Animated.Value(1)).current;
+  const toastOpacity = useRef(new Animated.Value(0)).current;
+  const toastTranslateY = useRef(new Animated.Value(0)).current;
   const addTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleQuickAdd = useCallback(() => {
-    if (added) return; // prevent double-tap during animation
+    if (added) return;
 
     addItem(item, 1);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
-    // Show checkmark state
     setAdded(true);
 
-    // Bounce animation
-    btnScale.setValue(0.6);
+    // Button bounce
+    btnScale.setValue(0.5);
     Animated.spring(btnScale, {
       toValue: 1,
       tension: 200,
@@ -44,7 +45,25 @@ export default function MenuItemCard({ item }: Props) {
       useNativeDriver: true,
     }).start();
 
-    // Reset after 800ms
+    // Floating toast: fade in + slide up, then fade out
+    toastOpacity.setValue(1);
+    toastTranslateY.setValue(0);
+    Animated.parallel([
+      Animated.timing(toastTranslateY, {
+        toValue: -30,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+      Animated.sequence([
+        Animated.delay(400),
+        Animated.timing(toastOpacity, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]),
+    ]).start();
+
     if (addTimeoutRef.current) clearTimeout(addTimeoutRef.current);
     addTimeoutRef.current = setTimeout(() => {
       setAdded(false);
@@ -62,6 +81,17 @@ export default function MenuItemCard({ item }: Props) {
           <FavoriteButton itemId={item.id} size={14} compact />
         </View>
       </View>
+      {/* Floating "נוסף לסל!" toast */}
+      <Animated.View
+        pointerEvents="none"
+        style={[
+          styles.toast,
+          { opacity: toastOpacity, transform: [{ translateY: toastTranslateY }] },
+        ]}
+      >
+        <Text style={styles.toastText}>נוסף לסל!</Text>
+      </Animated.View>
+
       <View style={styles.content}>
         <View style={styles.titleRow}>
           <Text style={styles.name} numberOfLines={1}>{item.name}</Text>
@@ -175,6 +205,26 @@ const getStyles = (colors: ColorScheme) => StyleSheet.create({
     backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  toast: {
+    position: 'absolute',
+    top: 8,
+    alignSelf: 'center',
+    backgroundColor: colors.success,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 16,
+    zIndex: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  toastText: {
+    color: colors.white,
+    fontSize: 13,
+    fontWeight: '800',
   },
   newBadge: {
     backgroundColor: colors.success,

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { secureStorage } from '@/lib/secureStorage';
 import { User } from '@/types';
 
 type UserState = {
@@ -50,7 +50,7 @@ export const useUserStore = create<UserState>()(
     }),
     {
       name: 'coffeebreak-user',
-      storage: createJSONStorage(() => AsyncStorage),
+      storage: createJSONStorage(() => secureStorage),
     }
   )
 );

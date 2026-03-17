@@ -9,8 +9,9 @@ import { useUserStore } from '@/stores/userStore';
 import { useStreakStore } from '@/stores/streakStore';
 import { useSettingsStore } from '@/stores/settingsStore';
 import * as vouchersService from '@/services/vouchersService';
-import { parseTokenizedPayload } from '@/utils/tokenizedVoucher';
+import { validateTokenizedPayload } from '@/utils/tokenizedVoucher';
 import BarcodeScanner from '@/components/BarcodeScanner';
+import { useAdminStore } from '@/stores/adminStore';
 import { Voucher } from '@/types';
 
 type Mode = 'stamp' | 'voucher';
@@ -20,7 +21,7 @@ export default function StampScannerScreen() {
   const { stamps, stampsGoal, addStamp } = useLoyaltyStore();
   const { incrementCoffees, user } = useUserStore();
   const { recordOrder } = useStreakStore();
-  const staffPin = useSettingsStore((s) => s.staffPin);
+  const staffUserId = useAdminStore((s) => s.staffUserId);
   const colors = useThemeColors();
   const styles = getStyles(colors);
 
@@ -38,45 +39,76 @@ export default function StampScannerScreen() {
   const successScale = useRef(new Animated.Value(0)).current;
   const pinRef = useRef<TextInput>(null);
 
-  // Handle scanned QR data (may be tokenized or raw barcode)
-  const handleCameraScan = useCallback((data: string) => {
+  // Handle scanned QR data — validate token + voucher via server
+  const handleCameraScan = useCallback(async (data: string) => {
     setShowCamera(false);
+    setIsValidating(true);
+    setVoucherResult(null);
 
-    // Parse tokenized payload (barcode|timestamp|token) or raw barcode
-    const parsed = parseTokenizedPayload(data);
+    try {
+      // Server-side HMAC validation + voucher lookup in one call
+      const result = await validateTokenizedPayload(data);
 
-    if (!parsed.valid) {
+      if (!result.valid) {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+        const errorMessages: Record<string, string> = {
+          expired: 'קוד QR פג תוקף — בקשו מהלקוח לרענן',
+          invalid_token: 'קוד QR לא תקין',
+          invalid_format: 'פורמט לא מזוהה',
+          not_found: 'קופון לא נמצא',
+          already_redeemed: 'קופון כבר מומש',
+          invalid_status: 'קופון לא תקין',
+        };
+        setVoucherResult({
+          success: false,
+          message: errorMessages[result.error ?? 'invalid_format'] ?? 'שגיאה',
+        });
+        setVoucherStep('result');
+        return;
+      }
+
+      // Token + voucher are valid — show preview
+      if (result.voucher) {
+        const barcode = data.split('|')[0] ?? '';
+        setVoucherCode(barcode);
+        setValidatedVoucher({
+          id: '',
+          type: result.voucher.type as any,
+          status: 'active',
+          title: result.voucher.title,
+          description: result.voucher.description,
+          value: result.voucher.value,
+          barcode: result.voucher.barcode,
+          earnedAt: '',
+          expiresAt: result.voucher.expires_at,
+        });
+        setVoucherStep('preview');
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+      }
+    } catch {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-      const errorMessages: Record<string, string> = {
-        expired: 'קוד QR פג תוקף — בקשו מהלקוח לרענן',
-        invalid_token: 'קוד QR לא תקין',
-        invalid_format: 'פורמט לא מזוהה',
-      };
       setVoucherResult({
         success: false,
-        message: errorMessages[parsed.error ?? 'invalid_format'] ?? 'שגיאה',
+        message: 'אין חיבור לאינטרנט — בדקו את הרשת ונסו שנית',
       });
       setVoucherStep('result');
-      return;
+    } finally {
+      setIsValidating(false);
     }
-
-    // Auto-populate and validate
-    setVoucherCode(parsed.barcode);
-    setVoucherStep('input');
-    // Trigger validation immediately
-    setTimeout(() => {
-      handleVoucherValidateWithCode(parsed.barcode);
-    }, 100);
   }, []);
 
-  const handleUnlock = () => {
-    if (pin === staffPin) {
+  const [staffEmail, setStaffEmail] = useState('');
+  const [staffPassword, setStaffPassword] = useState('');
+  const { authenticateStaff, isLoading: isAuthLoading, loginError } = useAdminStore();
+
+  const handleUnlock = async () => {
+    const success = await authenticateStaff(staffEmail, staffPassword);
+    if (success) {
       setPinVisible(false);
-      setPin('');
+      setStaffEmail('');
+      setStaffPassword('');
     } else {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-      setPin('');
-      Alert.alert('קוד שגוי', 'נסו שנית.');
     }
   };
 
@@ -197,7 +229,12 @@ export default function StampScannerScreen() {
     setIsRedeeming(true);
 
     try {
-      const result = await vouchersService.redeemVoucher(validatedVoucher.barcode);
+      if (!staffUserId) {
+        setVoucherResult({ success: false, message: 'נדרשת התחברות מחדש' });
+        setVoucherStep('result');
+        return;
+      }
+      const result = await vouchersService.redeemVoucher(validatedVoucher.barcode, staffUserId);
 
       if (!result.success) {
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
@@ -206,6 +243,7 @@ export default function StampScannerScreen() {
           already_redeemed: 'קופון כבר מומש ע"י עובד אחר',
           expired: 'קופון פג תוקף',
           invalid_status: 'קופון לא תקין',
+          self_redemption_blocked: 'לא ניתן לממש קופון של עצמך',
         };
         setVoucherResult({
           success: false,
@@ -258,27 +296,48 @@ export default function StampScannerScreen() {
     return (
       <View style={styles.pinScreen}>
         <Lock size={48} color={colors.primary} />
-        <Text style={styles.pinTitle}>קוד צוות</Text>
+        <Text style={styles.pinTitle}>התחברות צוות</Text>
         <TextInput
-          ref={pinRef}
-          style={styles.pinInput}
-          value={pin}
-          onChangeText={setPin}
-          keyboardType="number-pad"
-          maxLength={4}
-          secureTextEntry
-          placeholder="••••"
+          style={styles.staffInput}
+          value={staffEmail}
+          onChangeText={setStaffEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          autoCorrect={false}
+          placeholder="אימייל"
           placeholderTextColor={colors.inactive}
           textAlign="center"
           autoFocus
+        />
+        <TextInput
+          style={styles.staffInput}
+          value={staffPassword}
+          onChangeText={setStaffPassword}
+          secureTextEntry
+          placeholder="סיסמה"
+          placeholderTextColor={colors.inactive}
+          textAlign="center"
           onSubmitEditing={handleUnlock}
         />
+        {loginError && (
+          <Text style={{ color: colors.error, fontSize: 14, fontWeight: '600', textAlign: 'center' }}>
+            {loginError}
+          </Text>
+        )}
         <Pressable
-          style={({ pressed }) => [styles.unlockBtn, pin.length < 4 && styles.unlockBtnDisabled, pressed && { opacity: 0.8 }]}
+          style={({ pressed }) => [
+            styles.unlockBtn,
+            (!staffEmail || !staffPassword || isAuthLoading) && styles.unlockBtnDisabled,
+            pressed && { opacity: 0.8 },
+          ]}
           onPress={handleUnlock}
-          disabled={pin.length < 4}
+          disabled={!staffEmail || !staffPassword || isAuthLoading}
         >
-          <Text style={styles.unlockBtnText}>כניסה</Text>
+          {isAuthLoading ? (
+            <ActivityIndicator color={colors.white} />
+          ) : (
+            <Text style={styles.unlockBtnText}>כניסה</Text>
+          )}
         </Pressable>
       </View>
     );
@@ -518,6 +577,7 @@ const getStyles = (colors: ColorScheme) => StyleSheet.create({
   pinScreen: { flex: 1, backgroundColor: colors.background, alignItems: 'center', justifyContent: 'center', padding: 32, gap: 16 },
   pinTitle: { fontSize: 22, fontWeight: '700', color: colors.textPrimary },
   pinInput: { fontSize: 32, fontWeight: '800', color: colors.textPrimary, backgroundColor: colors.white, borderRadius: 12, paddingVertical: 16, paddingHorizontal: 32, width: '100%', letterSpacing: 12, borderWidth: 2, borderColor: colors.border, textAlign: 'center' },
+  staffInput: { fontSize: 16, fontWeight: '600', color: colors.textPrimary, backgroundColor: colors.white, borderRadius: 12, paddingVertical: 14, paddingHorizontal: 20, width: '100%', borderWidth: 2, borderColor: colors.border, textAlign: 'center' },
   unlockBtn: { backgroundColor: colors.primary, paddingVertical: 14, borderRadius: 12, width: '100%', alignItems: 'center' },
   unlockBtnDisabled: { opacity: 0.4 },
   unlockBtnText: { fontSize: 18, fontWeight: '700', color: colors.white },

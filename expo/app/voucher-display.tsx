@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { View, Text, StyleSheet, Platform } from 'react-native';
+import { View, Text, StyleSheet, Platform, Pressable } from 'react-native';
 import { useLocalSearchParams, useFocusEffect } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ticket, Check, Clock, ShieldCheck } from 'lucide-react-native';
@@ -7,7 +7,7 @@ import { useThemeColors } from '@/hooks/useThemeColors';
 import { useReferralStore } from '@/stores/referralStore';
 import { useUserStore } from '@/stores/userStore';
 import QRCode from '@/components/QRCode';
-import { generateTokenizedPayload } from '@/utils/tokenizedVoucher';
+import { generateTokenizedPayload, TOKEN_ROTATE_INTERVAL } from '@/utils/tokenizedVoucher';
 import type { ColorScheme } from '@/constants/colors';
 
 // Safe optional imports for native modules (may not be available in Expo Go / web)
@@ -15,8 +15,6 @@ let Brightness: any = null;
 let ScreenCapture: any = null;
 try { Brightness = require('expo-brightness'); } catch {}
 try { ScreenCapture = require('expo-screen-capture'); } catch {}
-
-const TOKEN_ROTATE_INTERVAL = 60_000; // 60 seconds
 
 export default function VoucherDisplayScreen() {
   const colors = useThemeColors();
@@ -27,13 +25,20 @@ export default function VoucherDisplayScreen() {
   const originalBrightness = useRef<number | null>(null);
   const [qrPayload, setQrPayload] = useState('');
   const [countdown, setCountdown] = useState(TOKEN_ROTATE_INTERVAL / 1000);
+  const [tokenError, setTokenError] = useState(false);
 
-  // Generate rotating tokenized QR payload
-  const refreshToken = useCallback(() => {
-    if (!voucher || voucher.barcode.startsWith('LOCAL-')) return;
-    const payload = generateTokenizedPayload(voucher.barcode);
-    setQrPayload(payload);
-    setCountdown(TOKEN_ROTATE_INTERVAL / 1000);
+  // Request a signed token from the server (HMAC-SHA256)
+  const refreshToken = useCallback(async () => {
+    if (!voucher) return;
+    try {
+      // generateTokenizedPayload now calls the server Edge Function
+      const payload = await generateTokenizedPayload(voucher.id);
+      setQrPayload(payload);
+      setCountdown(TOKEN_ROTATE_INTERVAL / 1000);
+      setTokenError(false);
+    } catch {
+      setTokenError(true);
+    }
   }, [voucher]);
 
   // Rotate token every 60s
@@ -93,7 +98,7 @@ export default function VoucherDisplayScreen() {
 
   const isRedeemed = voucher.status === 'redeemed' || !!voucher.redeemedAt;
   const isExpired = voucher.status === 'expired';
-  const isPending = voucher.barcode.startsWith('LOCAL-');
+  const isPending = false;
   const isActive = !isRedeemed && !isExpired && !isPending;
 
   return (
@@ -124,7 +129,17 @@ export default function VoucherDisplayScreen() {
       </LinearGradient>
 
       <View style={styles.barcodeSection}>
-        {isActive && qrPayload ? (
+        {isActive && tokenError && !qrPayload ? (
+          <>
+            <Text style={styles.barcodeLabel}>שגיאה ביצירת קוד</Text>
+            <Pressable
+              onPress={refreshToken}
+              style={{ paddingVertical: 12, paddingHorizontal: 24, backgroundColor: colors.accentLight, borderRadius: 12 }}
+            >
+              <Text style={{ color: colors.accent, fontWeight: '700', fontSize: 16 }}>נסה שוב</Text>
+            </Pressable>
+          </>
+        ) : isActive && qrPayload ? (
           <>
             <Text style={styles.barcodeLabel}>סרקו את הקוד</Text>
             <View style={styles.qrContainer}>

@@ -27,7 +27,7 @@ const products = [
   },
   {
     id: 'pan-swiss',
-    prompt: `A rectangular laminated pastry similar to pain au chocolat shape, with beautiful horizontal crispy golden lamination layers visible on the surface. Chocolate filling peeking out from one end. Placed on a small white ceramic plate. Real Israeli boutique bakery style. ${STYLE_SUFFIX}`
+    prompt: `A rectangular laminated pastry with beautiful horizontal crispy golden lamination layers visible on the surface. WHITE cream cheese filling peeking out from one end - NOT chocolate, the filling is WHITE. Same shape as pain au chocolat but with white filling. Golden-brown with tight horizontal lines. ${STYLE_SUFFIX}`
   },
   {
     id: 'pain-au-chocolat',
@@ -59,7 +59,7 @@ const products = [
   },
   {
     id: 'brulee-strawberry-pastry',
-    prompt: `A folded yeast pastry (like a folded croissant shape) with a small round brûlée disc on top - caramelized sugar custard disc with a fresh strawberry placed on top of it. The pastry is golden and flaky, the brûlée is glossy amber. ${STYLE_SUFFIX}`
+    prompt: `A SQUARE shaped laminated pastry base (flat square puff pastry) with a small round brûlée disc on top - caramelized sugar custard disc with a fresh strawberry placed on top of it. The base is a golden flaky SQUARE pastry, not round, not folded. The brûlée disc sits on top with glossy amber caramelized sugar and a fresh strawberry. ${STYLE_SUFFIX}`
   },
   {
     id: 'patisserie-disc',
@@ -75,11 +75,11 @@ const products = [
   },
   {
     id: 'chocolate-rugelach',
-    prompt: `Traditional rolled rugelach pastries (3-4 pieces) with rich chocolate filling. Crescent-shaped, golden-brown with chocolate swirls visible in the spiral layers. Classic Jewish/Israeli pastry. ${STYLE_SUFFIX}`
+    prompt: `A single croissant-shaped rugelach pastry with alternating stripes of golden flaky dough and dark chocolate filling visible on the outside. Diamond/croissant shape, glossy golden dough with thick dark chocolate stripes running across the pastry between each layer. NOT traditional crescent rugelach - this is a modern Israeli boutique croissant-shaped rugelach. ${STYLE_SUFFIX}`
   },
   {
     id: 'toffifee-cube',
-    prompt: `A cube-shaped soft yeast pastry filled with rich toffee cream. Golden-brown exterior with a soft, pillowy texture. The toffee filling is visible where the pastry is slightly open. ${STYLE_SUFFIX}`
+    prompt: `A cube-shaped FLAKY LAMINATED croissant dough pastry (NOT bread) on a white plate. The cube shows visible flaky croissant-like laminated layers on the sides. Golden-brown caramel/toffee glaze dripping down the sides. On top: a drizzle of white chocolate, a dollop of mascarpone cream, and sliced fresh strawberry pieces. Tall square cube shape with crispy flaky layers visible. ${STYLE_SUFFIX}`
   },
   {
     id: 'mascarpone-strawberry-pastry',
@@ -139,15 +139,15 @@ const products = [
   },
   {
     id: 'croissant-omelet-parmesan',
-    prompt: `A flaky butter croissant split open and filled with a rich golden omelet, scraped/shaved parmesan cheese on top, and fresh green lollo lettuce. The croissant shows its laminated layers. ${STYLE_SUFFIX}`
+    prompt: `A flaky butter croissant split open and filled with a rich golden omelet, finely GRATED parmesan cheese sprinkled on top (like fine shreds, not chunks or slices), and fresh green lollo lettuce. The croissant shows its laminated layers. ${STYLE_SUFFIX}`
   },
   {
     id: 'sandwich-salmon',
-    prompt: `An open-faced sandwich - a single slice of sourdough bread on a wooden cutting board, spread with cream cheese, topped with folded smoked salmon slices, red onion rings, capers, and a fresh dill sprig. Elegant, boutique style. ${STYLE_SUFFIX}`
+    prompt: `A closed sandwich on dark sourdough bread slices, filled with white cream cheese spread, smoked salmon slices, and green lettuce leaf sticking out. Held together with a wooden toothpick on top. Served on a small white plate. Boutique café style sandwich. ${STYLE_SUFFIX}`
   },
   {
     id: 'sandwich-shakshuka',
-    prompt: `A warm pita/frenha bread filled with spicy shakshuka (eggs poached in tomato sauce with spices). The red tomato sauce and eggs are visible inside the bread. Rustic, hearty presentation. ${STYLE_SUFFIX}`
+    prompt: `A long baguette sub sandwich cut open and filled with shakshuka - scrambled eggs in chunky red tomato sauce with fresh green parsley and cilantro herbs on top. The baguette has sesame seeds. Colorful filling visible - red tomato, yellow egg, green herbs. On a light gray concrete surface. ${STYLE_SUFFIX}`
   },
 
   // === SALADS ===
@@ -197,13 +197,13 @@ const products = [
   },
   {
     id: 'jachnun-saturday',
-    prompt: `Traditional Yemenite jachnun - dark golden rolled pastry served with grated fresh tomato dip, hard-boiled egg, and zhug (spicy green sauce). Rich, slow-baked Shabbat morning specialty. Rustic presentation. ${STYLE_SUFFIX}`
+    prompt: `Traditional Yemenite jachnun - 2-3 golden crispy rolled phyllo pastry tubes/cylinders on a ceramic plate, served with a halved hard-boiled egg, a small white ramekin of red tomato sauce, and fresh parsley sprigs. The pastry rolls are golden-brown and flaky. ${STYLE_SUFFIX}`
   },
 
   // === DESSERTS ===
   {
     id: 'chocolate-cake',
-    prompt: `A rich, moist chocolate cake slice with a velvety texture, served warm with a drizzle of warm chocolate sauce. Dark, decadent, and indulgent. Single slice on a white plate. ${STYLE_SUFFIX}`
+    prompt: `A tall slice of rich dark chocolate cake coated in glossy dark chocolate ganache on a white plate. The chocolate ganache is melting and pooling around the base of the slice. Very dark, moist, dense chocolate cake. A spoon pressing into the cake showing how soft and fudgy it is. Decadent and indulgent. ${STYLE_SUFFIX}`
   },
   {
     id: 'dubai-chocolate',
@@ -219,7 +219,7 @@ const products = [
   },
   {
     id: 'cheesecake',
-    prompt: `A slice of baked cheesecake - rich, dense, and creamy with a velvety texture, on a crispy biscuit crumb base. Classic New York style, golden on top, smooth and creamy inside. On a white plate. ${STYLE_SUFFIX}`
+    prompt: `A tall triangular slice of smooth WHITE cheesecake on a white plate with a fork, with the whole round cheesecake visible in the background on another plate. The cheesecake is very white/cream colored, smooth and tall, with a thin golden biscuit crumb base. Clean, elegant, minimal. NOT golden or baked looking - pure white smooth cheesecake. ${STYLE_SUFFIX}`
   },
   {
     id: 'mascarpone-strawberries',

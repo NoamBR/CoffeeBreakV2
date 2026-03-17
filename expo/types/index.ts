@@ -39,7 +39,7 @@ export type Deal = {
   id: string;
   title: string;
   description: string;
-  image?: string;
+  image?: string | number;
   validUntil?: string;
   type: DealType;
 };
@@ -57,7 +57,8 @@ export type StoreInfo = {
 };
 
 // Cart & Order types
-export type MilkType = 'regular' | 'oat' | 'almond' | 'soy' | 'coconut' | 'lactose_free';
+export type MilkType = 'regular' | 'oat' | 'almond' | 'soy' | 'one_percent' | 'decaf';
+export type BreadType = 'chalah' | 'picnic' | 'sourdough' | 'croissant' | 'pretzel' | 'spelt';
 export type SugarLevel = 'none' | 'half' | 'regular' | 'extra';
 export type DrinkSize = 'small' | 'large';
 
@@ -71,6 +72,7 @@ export type ItemCustomization = {
   milkType?: MilkType;
   sugarLevel?: SugarLevel;
   size?: DrinkSize;
+  breadType?: BreadType;
   extras?: string[];
   notes?: string;
 };
@@ -88,6 +90,20 @@ export type CartItem = {
 
 export type OrderStatus = 'placed' | 'preparing' | 'ready' | 'completed' | 'cancelled';
 
+// Payment types
+export type PaymentMethod = 'at_register' | 'credit_card' | 'bit' | 'apple_pay' | 'google_pay';
+
+export type PaymentStatus = 'pending' | 'processing' | 'completed' | 'failed' | 'refunded';
+
+export type PaymentInfo = {
+  method: PaymentMethod;
+  status: PaymentStatus;
+  transactionId?: string;
+  last4?: string; // last 4 digits of card
+  paidAt?: string; // ISO
+  amount: number;
+};
+
 export type FullOrder = {
   id: string;
   customerName: string;
@@ -102,6 +118,7 @@ export type FullOrder = {
   readyAt?: string; // ISO - when marked ready
   completedAt?: string; // ISO - when completed
   status: OrderStatus;
+  payment?: PaymentInfo;
 };
 
 // Voucher system

@@ -14,6 +14,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Image } from 'expo-image';
 import { Coffee, ChevronDown, Search, ArrowLeft, Gift, Star, Sparkles } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 import { useThemeColors } from '@/hooks/useThemeColors';
@@ -99,7 +100,21 @@ export default function OnboardingScreen() {
 
   return (
     <View style={styles.wrapper}>
-      <LinearGradient colors={[colors.primaryDark, colors.primary]} style={styles.gradient}>
+      {/* Background photo for welcome step */}
+      {step === 'welcome' && (
+        <Image
+          source={require('../assets/social/story-full-table.png')}
+          style={StyleSheet.absoluteFill}
+          contentFit="cover"
+        />
+      )}
+      <LinearGradient
+        colors={step === 'welcome'
+          ? ['rgba(44,24,16,0.7)', 'rgba(61,43,31,0.85)']
+          : [colors.primaryDark, colors.primary]
+        }
+        style={styles.gradient}
+      >
         <SafeAreaView style={styles.safeArea}>
           <KeyboardAvoidingView
             style={styles.keyboardView}
@@ -108,7 +123,11 @@ export default function OnboardingScreen() {
             {/* ── Step: Welcome ── */}
             {step === 'welcome' && (
               <View style={styles.centered}>
-                <Coffee size={64} color={colors.white} />
+                <Image
+                  source={require('../assets/images/logo.png')}
+                  style={styles.logoImage}
+                  contentFit="contain"
+                />
                 <Text style={styles.logo}>הפסקת קפה</Text>
                 <Text style={styles.tagline}>הקפה הכי טוב באשקלון</Text>
 
@@ -347,6 +366,12 @@ const getStyles = (colors: ColorScheme) => StyleSheet.create({
   },
 
   // ── Welcome step ──
+  logoImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 24,
+    alignSelf: 'center',
+  },
   logo: {
     fontSize: 36,
     fontWeight: '800',

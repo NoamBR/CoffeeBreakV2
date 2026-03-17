@@ -30,7 +30,7 @@ export type ValidationResult = {
 
 export type RedemptionResult = {
   success: boolean;
-  error?: 'not_found' | 'already_redeemed' | 'expired' | 'invalid_status';
+  error?: 'not_found' | 'already_redeemed' | 'expired' | 'invalid_status' | 'self_redemption_blocked';
   voucher?: Voucher;
 };
 
@@ -130,14 +130,15 @@ export async function validateVoucher(barcode: string): Promise<ValidationResult
 /**
  * Atomically redeem a voucher. Prevents double-spending at the DB level.
  * Only one concurrent call per barcode can succeed.
+ * staffId is required — self-redemption is blocked server-side.
  */
 export async function redeemVoucher(
   barcode: string,
-  staffId?: string
+  staffId: string
 ): Promise<RedemptionResult> {
   const { data, error } = await supabase.rpc('redeem_voucher', {
     p_barcode: barcode,
-    p_staff_id: staffId ?? null,
+    p_staff_id: staffId,
   });
 
   if (error) throw error;
