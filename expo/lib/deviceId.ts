@@ -1,41 +1,52 @@
 /**
  * Device Fingerprinting for Voucher Security
  *
- * Generates a persistent, cryptographically random device ID stored in
- * iOS Keychain / Android Keystore via expo-secure-store.
+ * Generates a persistent, cryptographically random device ID.
+ * Uses expo-secure-store if available, falls back to AsyncStorage.
  *
  * This ID is included in HMAC token generation so that QR codes are
  * cryptographically bound to the device that generated them.
  * Screenshots shared to other devices become invalid.
  */
-import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const DEVICE_ID_KEY = 'coffeebreak_device_fingerprint';
 
-/** In-memory cache to avoid repeated SecureStore reads */
+// Safe dynamic import — expo-secure-store may not be installed
+let SecureStore: typeof import('expo-secure-store') | null = null;
+try {
+  SecureStore = require('expo-secure-store');
+} catch {
+  // Not available — will use AsyncStorage fallback
+}
+
+/** In-memory cache to avoid repeated storage reads */
 let cachedDeviceId: string | null = null;
 
 /**
  * Get or create a persistent device fingerprint.
- * - First call: generates 32 random bytes (hex), stores in SecureStore
+ * - First call: generates 32 random bytes (hex), stores persistently
  * - Subsequent calls: returns cached value
  * - Reinstalling the app generates a new ID (user re-authenticates anyway)
  */
 export async function getOrCreateDeviceId(): Promise<string> {
   if (cachedDeviceId) return cachedDeviceId;
 
+  // Try to read existing fingerprint
   try {
-    // Try to read existing fingerprint
-    if (Platform.OS !== 'web') {
-      const existing = await SecureStore.getItemAsync(DEVICE_ID_KEY);
-      if (existing) {
-        cachedDeviceId = existing;
-        return existing;
-      }
+    let existing: string | null = null;
+    if (SecureStore && Platform.OS !== 'web') {
+      existing = await SecureStore.getItemAsync(DEVICE_ID_KEY);
+    } else {
+      existing = await AsyncStorage.getItem(DEVICE_ID_KEY);
+    }
+    if (existing) {
+      cachedDeviceId = existing;
+      return existing;
     }
   } catch {
-    // SecureStore unavailable (e.g., Expo Go web) — generate ephemeral ID
+    // Storage read failed — generate new ID below
   }
 
   // Generate new fingerprint: 32 bytes = 256 bits of entropy
@@ -45,13 +56,15 @@ export async function getOrCreateDeviceId(): Promise<string> {
     .map((b) => b.toString(16).padStart(2, '0'))
     .join('');
 
+  // Persist
   try {
-    if (Platform.OS !== 'web') {
+    if (SecureStore && Platform.OS !== 'web') {
       await SecureStore.setItemAsync(DEVICE_ID_KEY, deviceId);
+    } else {
+      await AsyncStorage.setItem(DEVICE_ID_KEY, deviceId);
     }
   } catch {
     // If we can't persist, the ID will be regenerated next session
-    // This is acceptable — it just means the user needs a fresh QR token
   }
 
   cachedDeviceId = deviceId;
