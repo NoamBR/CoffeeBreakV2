@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { secureStorage } from '@/lib/secureStorage';
 import { FullOrder, OrderStatus } from '@/types';
 import { useInAppNotificationsStore } from './inAppNotificationsStore';
 import * as ordersService from '@/services/ordersService';
@@ -248,7 +248,7 @@ export const useOrderHistoryStore = create<OrderHistoryState>()(
     }),
     {
       name: 'coffeebreak-order-history',
-      storage: createJSONStorage(() => AsyncStorage),
+      storage: createJSONStorage(() => secureStorage),
       // Don't persist transient state
       partialize: (state) => ({
         orders: state.orders,

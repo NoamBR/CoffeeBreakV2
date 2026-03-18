@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { secureStorage } from '@/lib/secureStorage';
 import { Deal } from '@/types';
 import { deals as baseDeals } from '@/data/deals';
 
@@ -72,7 +72,7 @@ export const useDealsOverrideStore = create<DealsOverrideState>()(
     }),
     {
       name: 'coffeebreak-deals-overrides',
-      storage: createJSONStorage(() => AsyncStorage),
+      storage: createJSONStorage(() => secureStorage),
     }
   )
 );

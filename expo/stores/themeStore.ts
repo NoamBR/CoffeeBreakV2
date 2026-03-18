@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { secureStorage } from '@/lib/secureStorage';
 
 type ThemePreference = 'light' | 'dark';
 
@@ -17,7 +17,7 @@ export const useThemeStore = create<ThemeState>()(
     }),
     {
       name: 'coffeebreak-theme',
-      storage: createJSONStorage(() => AsyncStorage),
+      storage: createJSONStorage(() => secureStorage),
     }
   )
 );

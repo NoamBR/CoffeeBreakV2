@@ -6,24 +6,22 @@ import * as vouchersService from '@/services/vouchersService';
 import { CreateVoucherParams } from '@/services/vouchersService';
 
 /**
- * Create a local placeholder voucher pending server sync.
- * Uses LOCAL- prefix to distinguish from server-generated barcodes.
- * The real barcode is assigned server-side via create_voucher().
+ * Create a voucher locally — immediately active and usable.
+ * Server sync happens in the background when available.
  */
 function createVoucherLocal(type: VoucherType, title: string, description: string, value?: number): Voucher {
-  // Use crypto.getRandomValues for better entropy than Math.random
   const bytes = new Uint8Array(8);
   crypto.getRandomValues(bytes);
   const hex = Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
 
   return {
-    id: `local-${Date.now()}-${hex.slice(0, 8)}`,
+    id: `${Date.now()}-${hex.slice(0, 8)}`,
     type,
-    status: 'pending',
+    status: 'active',
     title,
     description,
     value,
-    barcode: `LOCAL-${hex.toUpperCase()}`, // Placeholder — replaced after server sync
+    barcode: `CB-${hex.slice(0, 4).toUpperCase()}-${hex.slice(4, 8).toUpperCase()}-${hex.slice(8, 12).toUpperCase()}`,
     source: inferSource(title),
     earnedAt: new Date().toISOString(),
   };
