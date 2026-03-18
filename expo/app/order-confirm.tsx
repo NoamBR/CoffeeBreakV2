@@ -227,6 +227,7 @@ export default function OrderConfirmScreen() {
             placeholderTextColor={colors.inactive}
             value={notes}
             onChangeText={setNotes}
+            maxLength={200}
             multiline
             numberOfLines={3}
           />

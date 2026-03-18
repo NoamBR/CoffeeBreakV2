@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { secureStorage } from '@/lib/secureStorage';
 import { MenuItem } from '@/types';
 import { menuItems as baseMenuItems } from '@/data/menu';
 
@@ -72,7 +72,7 @@ export const useMenuOverrideStore = create<MenuOverrideState>()(
     }),
     {
       name: 'coffeebreak-menu-overrides',
-      storage: createJSONStorage(() => AsyncStorage),
+      storage: createJSONStorage(() => secureStorage),
     }
   )
 );

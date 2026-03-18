@@ -28,16 +28,22 @@ export default function VoucherDisplayScreen() {
   const [tokenError, setTokenError] = useState(false);
 
   // Request a signed token from the server (HMAC-SHA256)
+  // Falls back to barcode-only QR if server is unavailable
   const refreshToken = useCallback(async () => {
     if (!voucher) return;
     try {
-      // generateTokenizedPayload now calls the server Edge Function
       const payload = await generateTokenizedPayload(voucher.id);
       setQrPayload(payload);
       setCountdown(TOKEN_ROTATE_INTERVAL / 1000);
       setTokenError(false);
     } catch {
-      setTokenError(true);
+      // Fallback: use barcode directly as QR payload
+      if (voucher.barcode) {
+        setQrPayload(voucher.barcode);
+        setTokenError(false);
+      } else {
+        setTokenError(true);
+      }
     }
   }, [voucher]);
 

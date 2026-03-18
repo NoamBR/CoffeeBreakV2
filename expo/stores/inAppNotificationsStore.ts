@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { secureStorage } from '@/lib/secureStorage';
 
 export type InAppNotification = {
   id: string;
@@ -87,7 +87,7 @@ export const useInAppNotificationsStore = create<InAppNotificationsState>()(
     }),
     {
       name: 'coffeebreak-in-app-notifications',
-      storage: createJSONStorage(() => AsyncStorage),
+      storage: createJSONStorage(() => secureStorage),
     }
   )
 );

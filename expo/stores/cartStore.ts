@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { secureStorage } from '@/lib/secureStorage';
 import { CartItem, MenuItem, ItemCustomization } from '@/types';
 import { sizeOptions, foodExtras } from '@/data/customizations';
 
@@ -76,7 +76,7 @@ export const useCartStore = create<CartState>()(
     }),
     {
       name: 'coffeebreak-cart',
-      storage: createJSONStorage(() => AsyncStorage),
+      storage: createJSONStorage(() => secureStorage),
     }
   )
 );
