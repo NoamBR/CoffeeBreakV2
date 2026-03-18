@@ -139,6 +139,19 @@ export default function OnboardingScreen() {
       }
 
       setVerifiedUserId(data.userId || null);
+
+      // Establish Supabase Auth session using the magic link token
+      if (data.access_token && data.token_type === 'magiclink') {
+        const { error: sessionError } = await supabase.auth.verifyOtp({
+          token_hash: data.access_token,
+          type: 'magiclink',
+        });
+        if (sessionError) {
+          console.warn('Failed to establish auth session:', sessionError.message);
+          // Continue anyway — user can still use the app, just without RLS
+        }
+      }
+
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       setStep('details');
     } catch (err) {
@@ -174,14 +187,31 @@ export default function OnboardingScreen() {
   };
 
   // ── Finish onboarding ─────────────────────────────────────
-  const handleFinish = () => {
+  const handleFinish = async () => {
     if (!isNameValid) return;
 
-    completeOnboarding(name.trim(), fullPhone, birthday.trim() || undefined);
+    const trimmedName = name.trim();
+    const trimmedBirthday = birthday.trim() || undefined;
 
-    // Use server-generated user ID if available
-    if (verifiedUserId) {
-      useUserStore.getState().updateUser({ id: verifiedUserId });
+    completeOnboarding(trimmedName, fullPhone, trimmedBirthday);
+
+    // Use auth session user ID if available, else fall back to server-returned ID
+    const { data: { session } } = await supabase.auth.getSession();
+    const authUserId = session?.user?.id || verifiedUserId;
+    if (authUserId) {
+      useUserStore.getState().updateUser({ id: authUserId });
+
+      // Sync name & birthday to Auth user_metadata (non-blocking)
+      supabase.auth.updateUser({
+        data: { name: trimmedName, birthday: trimmedBirthday },
+      }).catch(() => {});
+
+      // Sync name to public.users table (non-blocking)
+      supabase
+        .from('users')
+        .update({ name: trimmedName, birthday: trimmedBirthday })
+        .eq('id', authUserId)
+        .then(() => {});
     }
 
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -205,7 +235,7 @@ export default function OnboardingScreen() {
       {/* Background photo for welcome step */}
       {step === 'welcome' && (
         <Image
-          source={require('../assets/social/story-full-table.png')}
+          source={require('../assets/images/story-full-table.png')}
           style={StyleSheet.absoluteFill}
           contentFit="cover"
         />
