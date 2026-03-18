@@ -1,0 +1,65 @@
+name: EAS Build & Submit
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Platform to build'
+        type: choice
+        options:
+          - ios
+          - android
+          - all
+        default: all
+      profile:
+        description: 'Build profile'
+        type: choice
+        options:
+          - preview
+          - production
+        default: preview
+
+jobs:
+  build:
+    name: Build (${{ inputs.platform || 'all' }} - ${{ inputs.profile || 'production' }})
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: expo
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Build
+        run: |
+          PLATFORM="${{ inputs.platform || 'all' }}"
+          PROFILE="${{ inputs.profile || 'production' }}"
+          eas build --platform "$PLATFORM" --profile "$PROFILE" --non-interactive
+
+      - name: Submit to stores (production only)
+        if: inputs.profile == 'production' || startsWith(github.ref, 'refs/tags/v')
+        run: |
+          PLATFORM="${{ inputs.platform || 'all' }}"
+          eas submit --platform "$PLATFORM" --profile production --non-interactive

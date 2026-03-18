@@ -7,6 +7,8 @@ import { I18nManager } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useThemeStore } from "@/stores/themeStore";
 import { useThemeColors } from "@/hooks/useThemeColors";
+import { supabase } from "@/lib/supabase";
+import { useUserStore } from "@/stores/userStore";
 
 void SplashScreen.preventAutoHideAsync();
 
@@ -21,6 +23,21 @@ const queryClient = new QueryClient();
 export default function RootLayout() {
   const isDark = useThemeStore((s) => s.preference === 'dark');
   const colors = useThemeColors();
+
+  // Restore Supabase Auth session & keep user ID in sync
+  useEffect(() => {
+    // Listen for auth state changes (session restore, token refresh, sign-out)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        const store = useUserStore.getState();
+        if (store.user && store.user.id !== session.user.id) {
+          store.updateUser({ id: session.user.id });
+        }
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     void SplashScreen.hideAsync();

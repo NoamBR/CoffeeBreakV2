@@ -10,6 +10,7 @@ import { useCartStore } from '@/stores/cartStore';
 import { menuItems } from '@/data/menu';
 import { formatPrice } from '@/utils/formatPrice';
 import type { ColorScheme } from '@/constants/colors';
+import { resolveImageSource } from '@/utils/resolveAsset';
 
 export default function YourUsualWidget() {
   const router = useRouter();
@@ -142,7 +143,7 @@ export default function YourUsualWidget() {
         <View style={styles.cardTop}>
           {image && (
             <Image
-              source={typeof image === 'number' ? image : { uri: image }}
+              source={resolveImageSource(image)}
               style={styles.thumb}
               contentFit="cover"
             />

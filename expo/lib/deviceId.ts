@@ -1,8 +1,10 @@
 /**
  * Device Fingerprinting for Voucher Security
  *
- * Generates a persistent, cryptographically random device ID.
- * Uses expo-secure-store if available, falls back to AsyncStorage.
+ * Generates a persistent, cryptographically random device ID combined with
+ * hardware signals for defense-in-depth. Even if the base ID is extracted
+ * from storage (rooted device), the attacker must also replicate exact
+ * device hardware characteristics.
  *
  * This ID is included in HMAC token generation so that QR codes are
  * cryptographically bound to the device that generated them.
@@ -13,13 +15,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const DEVICE_ID_KEY = 'coffeebreak_device_fingerprint';
 
-// Safe dynamic import — expo-secure-store may not be installed
+// Safe dynamic imports — may not be installed or available in all environments
 let SecureStore: typeof import('expo-secure-store') | null = null;
-try {
-  SecureStore = require('expo-secure-store');
-} catch {
-  // Not available — will use AsyncStorage fallback
-}
+let Device: typeof import('expo-device') | null = null;
+let Application: typeof import('expo-application') | null = null;
+try { SecureStore = require('expo-secure-store'); } catch {}
+try { Device = require('expo-device'); } catch {}
+try { Application = require('expo-application'); } catch {}
 
 /** In-memory cache to avoid repeated storage reads */
 let cachedDeviceId: string | null = null;
@@ -79,6 +81,40 @@ export async function getDeviceIdHash(): Promise<string> {
   const deviceId = await getOrCreateDeviceId();
   const encoder = new TextEncoder();
   const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(deviceId));
+  return Array.from(new Uint8Array(hashBuffer))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+/**
+ * Enhanced multi-signal device fingerprint.
+ * Combines the cryptographic random base ID with hardware signals
+ * (model, OS version, RAM, app version, manufacturer) to create a
+ * composite fingerprint that is harder to extract and replicate.
+ *
+ * Falls back gracefully if hardware info APIs are unavailable.
+ */
+export async function getEnhancedFingerprint(): Promise<string> {
+  const baseId = await getOrCreateDeviceId();
+
+  // Collect hardware signals (non-PII, stable across app restarts)
+  const signals: string[] = [baseId];
+
+  if (Device) {
+    signals.push(Device.modelName ?? 'unknown');
+    signals.push(Device.osVersion ?? 'unknown');
+    signals.push(Device.totalMemory?.toString() ?? '0');
+    signals.push(Device.manufacturer ?? 'unknown');
+  }
+
+  if (Application) {
+    signals.push(Application.nativeApplicationVersion ?? '0');
+  }
+
+  // Hash all signals together — composite fingerprint
+  const combined = signals.join('|');
+  const encoder = new TextEncoder();
+  const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(combined));
   return Array.from(new Uint8Array(hashBuffer))
     .map((b) => b.toString(16).padStart(2, '0'))
     .join('');

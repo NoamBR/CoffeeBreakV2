@@ -12,17 +12,19 @@ import {
   Modal,
   Alert,
   ActivityIndicator,
+  Linking,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Image } from 'expo-image';
-import { Coffee, ChevronDown, Search, ArrowLeft, Gift, Star, Sparkles, MessageCircle } from 'lucide-react-native';
+import { Coffee, ChevronDown, Search, ArrowLeft, Gift, Star, Sparkles, MessageCircle, Check } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import type { ColorScheme } from '@/constants/colors';
 import { useUserStore } from '@/stores/userStore';
 import { supabase } from '@/lib/supabase';
+import { resolveImageSource } from '@/utils/resolveAsset';
 
 // ── Country codes ──────────────────────────────────────────
 type Country = { name: string; nameHe: string; code: string; dial: string; flag: string };
@@ -92,8 +94,19 @@ export default function OnboardingScreen() {
   }, [resendTimer]);
 
   const [verifiedUserId, setVerifiedUserId] = useState<string | null>(null);
+  const [otpGenerated, setOtpGenerated] = useState<string | null>(null);
+  const [waLink, setWaLink] = useState<string | null>(null);
+  const [waSent, setWaSent] = useState(false);
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // ── Send OTP via WhatsApp ─────────────────────────────────
+  // Clean up polling on unmount
+  useEffect(() => {
+    return () => {
+      if (pollRef.current) clearInterval(pollRef.current);
+    };
+  }, []);
+
+  // ── Generate OTP & get wa.me link ──────────────────────────
   const handleSendOtp = async () => {
     if (!isPhoneValid || loading) return;
     setLoading(true);
@@ -104,15 +117,16 @@ export default function OnboardingScreen() {
       });
 
       if (error || data?.error) {
-        Alert.alert('שגיאה', data?.error || 'לא הצלחנו לשלוח קוד. נסו שוב.');
+        Alert.alert('שגיאה', data?.error || 'לא הצלחנו ליצור קוד. נסו שוב.');
         setLoading(false);
         return;
       }
 
+      setOtpGenerated(data.code);
+      setWaLink(data.waLink);
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       setStep('otp');
       setResendTimer(60);
-      setTimeout(() => otpInputRef.current?.focus(), 300);
     } catch (err) {
       console.error('OTP send error:', err);
       Alert.alert('שגיאה', 'בעיה בחיבור. בדקו את האינטרנט ונסו שוב.');
@@ -121,45 +135,54 @@ export default function OnboardingScreen() {
     }
   };
 
-  // ── Verify OTP ────────────────────────────────────────────
-  const handleVerifyOtp = async () => {
-    if (!isOtpValid || loading) return;
-    setLoading(true);
+  // ── Open WhatsApp to send OTP ──────────────────────────────
+  const handleOpenWhatsApp = () => {
+    const link = waLink || `https://wa.me/972555170316?text=${otpGenerated}`;
+    Linking.openURL(link);
+    setWaSent(true);
 
-    try {
-      const { data, error } = await supabase.functions.invoke('verify-otp', {
-        body: { phone: fullPhone, code: otpCode.trim() },
-      });
-
-      if (error || !data?.verified) {
-        Alert.alert('קוד שגוי', data?.error || 'הקוד שהוזן אינו תקין. נסו שוב.');
-        setOtpCode('');
-        setLoading(false);
-        return;
-      }
-
-      setVerifiedUserId(data.userId || null);
-
-      // Establish Supabase Auth session using the magic link token
-      if (data.access_token && data.token_type === 'magiclink') {
-        const { error: sessionError } = await supabase.auth.verifyOtp({
-          token_hash: data.access_token,
-          type: 'magiclink',
+    // Start polling for webhook verification
+    if (pollRef.current) clearInterval(pollRef.current);
+    pollRef.current = setInterval(async () => {
+      try {
+        const { data } = await supabase.functions.invoke('verify-otp', {
+          body: { phone: fullPhone },
         });
-        if (sessionError) {
-          console.warn('Failed to establish auth session:', sessionError.message);
-          // Continue anyway — user can still use the app, just without RLS
-        }
-      }
 
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      setStep('details');
-    } catch (err) {
-      console.error('OTP verify error:', err);
-      Alert.alert('שגיאה', 'בעיה באימות. נסו שוב.');
-    } finally {
-      setLoading(false);
-    }
+        if (data?.verified) {
+          if (pollRef.current) clearInterval(pollRef.current);
+          pollRef.current = null;
+
+          setVerifiedUserId(data.userId || null);
+
+          // Establish auth session
+          if (data.access_token && data.token_type === 'magiclink') {
+            const { error: sessionError } = await supabase.auth.verifyOtp({
+              token_hash: data.access_token,
+              type: 'magiclink',
+            });
+            if (sessionError) {
+              console.warn('Auth session error:', sessionError.message);
+            }
+          }
+
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
+          // Returning user with name — skip details, go straight in
+          if (data.existingUser?.name) {
+            completeOnboarding(data.existingUser.name, fullPhone, data.existingUser.birthday);
+            if (data.userId) {
+              useUserStore.getState().updateUser({ id: data.userId });
+            }
+            router.replace('/(tabs)');
+          } else {
+            setStep('details');
+          }
+        }
+      } catch {
+        // Ignore polling errors
+      }
+    }, 3000); // Poll every 3 seconds
   };
 
   // ── Resend OTP ────────────────────────────────────────────
@@ -173,8 +196,11 @@ export default function OnboardingScreen() {
       });
 
       if (error || data?.error) {
-        Alert.alert('שגיאה', 'לא הצלחנו לשלוח קוד חדש. נסו שוב.');
+        Alert.alert('שגיאה', 'לא הצלחנו ליצור קוד חדש. נסו שוב.');
       } else {
+        setOtpGenerated(data.code);
+        setWaLink(data.waLink);
+        setWaSent(false);
         setResendTimer(60);
         setOtpCode('');
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -206,10 +232,13 @@ export default function OnboardingScreen() {
         data: { name: trimmedName, birthday: trimmedBirthday },
       }).catch(() => {});
 
+      // Calculate birthday eligibility — not eligible if birthday is within 7 days of signup
+      const birthdayEligibleFrom = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+
       // Sync name to public.users table (non-blocking)
       supabase
         .from('users')
-        .update({ name: trimmedName, birthday: trimmedBirthday })
+        .update({ name: trimmedName, birthday: trimmedBirthday, birthday_eligible_from: birthdayEligibleFrom })
         .eq('id', authUserId)
         .then(() => {});
     }
@@ -235,7 +264,7 @@ export default function OnboardingScreen() {
       {/* Background photo for welcome step */}
       {step === 'welcome' && (
         <Image
-          source={require('../assets/images/story-full-table.png')}
+          source={resolveImageSource(require('../assets/images/story-full-table.png'))}
           style={StyleSheet.absoluteFill}
           contentFit="cover"
         />
@@ -256,7 +285,7 @@ export default function OnboardingScreen() {
             {step === 'welcome' && (
               <View style={styles.centered}>
                 <Image
-                  source={require('../assets/images/logo.png')}
+                  source={resolveImageSource(require('../assets/images/logo.png'))}
                   style={styles.logoImage}
                   contentFit="contain"
                 />
@@ -297,11 +326,12 @@ export default function OnboardingScreen() {
 
             {/* ── Step: Phone ── */}
             {step === 'phone' && (
-              <View style={styles.centered}>
-                <Pressable style={styles.backBtn} onPress={() => setStep('welcome')}>
+              <View style={{ flex: 1, paddingHorizontal: 32 }}>
+                <Pressable style={{ alignSelf: 'flex-start', padding: 4, marginTop: 16 }} onPress={() => setStep('welcome')}>
                   <ArrowLeft size={24} color={colors.white} />
                 </Pressable>
 
+                <View style={{ flex: 1, justifyContent: 'center' }}>
                 <Text style={styles.stepTitle}>מספר הטלפון שלך</Text>
                 <Text style={styles.stepSubtitle}>
                   נשלח לך קוד אימות בוואטסאפ
@@ -352,53 +382,62 @@ export default function OnboardingScreen() {
                     </View>
                   )}
                 </Pressable>
+                </View>
               </View>
             )}
 
-            {/* ── Step: OTP Verification ── */}
+            {/* ── Step: OTP — Send via WhatsApp ── */}
             {step === 'otp' && (
-              <View style={styles.centered}>
-                <Pressable style={styles.backBtn} onPress={() => { setStep('phone'); setOtpCode(''); }}>
+              <View style={{ flex: 1, paddingHorizontal: 32 }}>
+                <Pressable style={{ alignSelf: 'flex-start', padding: 4, marginTop: 16 }} onPress={() => { setStep('phone'); setOtpCode(''); setWaSent(false); if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; } }}>
                   <ArrowLeft size={24} color={colors.white} />
                 </Pressable>
 
-                <Text style={styles.stepTitle}>הזינו את הקוד</Text>
+                <View style={{ flex: 1, justifyContent: 'center' }}>
+                <Text style={styles.stepTitle}>אימות בוואטסאפ</Text>
                 <Text style={styles.stepSubtitle}>
-                  שלחנו קוד בן 6 ספרות ל-{'\n'}
-                  <Text style={{ fontWeight: '700' }}>{fullPhone}</Text>
+                  שלחו את הקוד הבא בוואטסאפ{'\n'}לאימות מספר הטלפון שלכם
                 </Text>
 
-                <TextInput
-                  ref={otpInputRef}
-                  style={styles.otpInput}
-                  placeholder="000000"
-                  placeholderTextColor="rgba(255,255,255,0.2)"
-                  value={otpCode}
-                  onChangeText={(text) => {
-                    const digits = text.replace(/\D/g, '').slice(0, 6);
-                    setOtpCode(digits);
-                  }}
-                  keyboardType="number-pad"
-                  textAlign="center"
-                  maxLength={6}
-                  autoFocus
-                />
+                {/* Show the OTP code */}
+                <View style={styles.otpDisplay}>
+                  <Text style={styles.otpDisplayText}>{otpGenerated}</Text>
+                </View>
 
+                {/* WhatsApp send button */}
                 <Pressable
                   style={({ pressed }) => [
-                    styles.primaryBtn,
-                    (!isOtpValid || loading) && styles.primaryBtnDisabled,
-                    pressed && isOtpValid && !loading && styles.primaryBtnPressed,
+                    styles.waBtn,
+                    waSent && styles.waBtnSent,
+                    pressed && !waSent && { opacity: 0.85, transform: [{ scale: 0.98 }] },
                   ]}
-                  onPress={handleVerifyOtp}
-                  disabled={!isOtpValid || loading}
+                  onPress={handleOpenWhatsApp}
                 >
-                  {loading ? (
-                    <ActivityIndicator color={colors.primary} />
-                  ) : (
-                    <Text style={styles.primaryBtnText}>אימות</Text>
-                  )}
+                  <View style={styles.waBtnContent}>
+                    {waSent ? (
+                      <>
+                        <Check size={20} color={colors.white} />
+                        <Text style={styles.waBtnText}>
+                          {loading ? 'ממתין לאימות...' : 'נשלח! ממתין לאימות...'}
+                        </Text>
+                      </>
+                    ) : (
+                      <>
+                        <MessageCircle size={20} color={colors.white} />
+                        <Text style={styles.waBtnText}>שלח קוד בוואטסאפ</Text>
+                      </>
+                    )}
+                  </View>
                 </Pressable>
+
+                {waSent && (
+                  <View style={{ alignItems: 'center', marginTop: 16, gap: 8 }}>
+                    <ActivityIndicator color="rgba(255,255,255,0.6)" />
+                    <Text style={[styles.stepSubtitle, { fontSize: 13, marginBottom: 0 }]}>
+                      ממתין לאימות... שלחת את הקוד?
+                    </Text>
+                  </View>
+                )}
 
                 <Pressable
                   style={styles.resendBtn}
@@ -410,10 +449,11 @@ export default function OnboardingScreen() {
                     resendTimer > 0 && { opacity: 0.4 },
                   ]}>
                     {resendTimer > 0
-                      ? `שלח שוב בעוד ${resendTimer} שניות`
-                      : 'לא קיבלתי קוד — שלח שוב'}
+                      ? `קוד חדש בעוד ${resendTimer} שניות`
+                      : 'צור קוד חדש'}
                   </Text>
                 </Pressable>
+                </View>
               </View>
             )}
 
@@ -443,7 +483,7 @@ export default function OnboardingScreen() {
                   </View>
 
                   <View style={styles.inputGroup}>
-                    <Text style={styles.label}>יום הולדת (אופציונלי)</Text>
+                    <Text style={styles.label}>תאריך לידה (אופציונלי)</Text>
                     <TextInput
                       style={styles.input}
                       placeholder="DD/MM"
@@ -698,21 +738,55 @@ const getStyles = (colors: ColorScheme) => StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
+  waBtn: {
+    backgroundColor: '#25D366',
+    paddingVertical: 16,
+    borderRadius: 14,
+    alignItems: 'center',
+    marginTop: 8,
+    width: '100%',
+  },
+  waBtnSent: {
+    backgroundColor: 'rgba(37,211,102,0.6)',
+  },
+  waBtnText: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: colors.white,
+  },
+
+  // ── OTP display ──
+  otpDisplay: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    borderRadius: 16,
+    paddingVertical: 20,
+    paddingHorizontal: 32,
+    marginBottom: 20,
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.3)',
+  },
+  otpDisplayText: {
+    fontSize: 36,
+    fontWeight: '900',
+    color: colors.white,
+    letterSpacing: 12,
+    textAlign: 'center',
+  },
 
   // ── OTP step ──
   otpInput: {
     backgroundColor: 'rgba(255,255,255,0.15)',
     borderRadius: 14,
     paddingHorizontal: 20,
-    paddingVertical: 18,
-    fontSize: 32,
-    fontWeight: '800',
+    paddingVertical: 14,
+    fontSize: 20,
+    fontWeight: '700',
     color: colors.white,
     borderWidth: 1.5,
     borderColor: 'rgba(255,255,255,0.3)',
-    letterSpacing: 12,
+    letterSpacing: 4,
     textAlign: 'center',
-    marginBottom: 24,
+    marginBottom: 12,
   },
   resendBtn: {
     alignItems: 'center',

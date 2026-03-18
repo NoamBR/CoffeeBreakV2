@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>App Store Screenshots — הפסקת קפה (Final)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Heebo', sans-serif; background: #000; display: flex; gap: 16px; padding: 16px; overflow-x: auto; }
+
+  /* 1284x2778 (iPhone 14 Pro Max 6.7") scaled to 1/3 for preview */
+  .ss {
+    width: 1284px; height: 2778px;
+    flex-shrink: 0;
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column; align-items: center;
+    transform: scale(0.333); transform-origin: top left;
+    margin-right: -856px; margin-bottom: -1852px;
+  }
+
+  /* BG */
+  .bg { position: absolute; inset: 0; z-index: 0; }
+  .bg1 { background: radial-gradient(ellipse at 50% 15%, #1E1612 0%, #0A0806 50%, #040302 100%); }
+  .bg2 { background: radial-gradient(ellipse at 50% 15%, #0D1628 0%, #060A14 50%, #020408 100%); }
+  .bg3 { background: radial-gradient(ellipse at 50% 15%, #1A150E 0%, #0A0806 50%, #040302 100%); }
+  .bg4 { background: radial-gradient(ellipse at 50% 15%, #1A0D1E 0%, #0A060E 50%, #040206 100%); }
+  .bg5 { background: radial-gradient(ellipse at 50% 15%, #0C1A12 0%, #060C08 50%, #020604 100%); }
+  .bg6 { background: radial-gradient(ellipse at 50% 15%, #10101A 0%, #08080E 50%, #040406 100%); }
+
+  /* Glow */
+  .glow { position: absolute; border-radius: 50%; filter: blur(180px); z-index: 1; pointer-events: none; }
+  .g1 { width: 700px; height: 500px; top: -50px; left: 50%; transform: translateX(-50%); background: rgba(212,160,74,0.14); }
+  .g2 { width: 500px; height: 500px; top: 850px; left: 50%; transform: translateX(-50%); background: rgba(212,160,74,0.06); }
+
+  /* Marketing top */
+  .top { position: relative; z-index: 5; text-align: center; padding: 120px 80px 0; width: 100%; }
+  .badge { display: inline-flex; align-items: center; gap: 14px; border: 2.5px solid rgba(212,160,74,0.45); border-radius: 50px; padding: 14px 40px; font-size: 28px; font-weight: 700; color: #D4A04A; background: rgba(212,160,74,0.06); margin-bottom: 44px; }
+  .badge-dot { width: 12px; height: 12px; border-radius: 50%; background: #D4A04A; }
+  .title { font-size: 92px; font-weight: 900; line-height: 1.1; margin-bottom: 20px; }
+  .gold { background: linear-gradient(135deg, #C8922A, #F5D78E, #D4A04A, #F5D78E, #C8922A); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .wh { color: #F5EDE4; }
+  .sub { font-size: 36px; color: rgba(245,237,228,0.45); font-weight: 500; }
+
+  /* iPhone */
+  .pw { position: relative; z-index: 5; margin-top: 60px; width: 780px; }
+  .ph {
+    width: 100%; height: 1560px;
+    background: #000;
+    border-radius: 100px 100px 0 0;
+    border: 7px solid #2A2A2C;
+    border-bottom: none;
+    overflow: hidden; position: relative;
+    box-shadow: 0 -16px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04);
+  }
+  .ph::before { content: ''; position: absolute; top: 20px; left: 50%; transform: translateX(-50%); width: 300px; height: 82px; background: #000; border-radius: 44px; z-index: 30; }
+  .ph::after { content: '9:41'; position: absolute; top: 32px; left: 54px; font-size: 34px; font-weight: 600; color: #fff; z-index: 20; font-family: 'Heebo'; }
+
+  /* Fade + bottom */
+  .fade { position: absolute; bottom: 0; left: 0; right: 0; height: 450px; background: linear-gradient(transparent, rgba(4,3,2,0.97)); z-index: 8; pointer-events: none; }
+  .bot { position: absolute; bottom: 60px; left: 0; right: 0; display: flex; justify-content: center; gap: 22px; z-index: 10; padding: 0 50px; }
+  .ft { border: 2.5px solid rgba(212,160,74,0.35); border-radius: 24px; padding: 22px 32px; text-align: center; background: rgba(212,160,74,0.04); min-width: 220px; }
+  .ft-v { font-size: 40px; font-weight: 900; color: #D4A04A; }
+  .ft-l { font-size: 22px; color: rgba(245,237,228,0.4); font-weight: 600; margin-top: 2px; }
+
+  /* ═══ SCREEN STYLES ═══ */
+  .scr { width: 100%; height: 100%; overflow: hidden; }
+
+  /* Welcome */
+  .sw { background: linear-gradient(180deg, #2C1810, #3D2B1F); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 130px 44px 44px; text-align: center; position: relative; }
+  .sw .bg-img { position: absolute; inset: 0; background: url('../images/story-full-table.png') center/cover; opacity: 0.2; }
+  .sw > * { position: relative; z-index: 1; }
+  .sw .lg { width: 160px; height: 160px; border-radius: 36px; background: rgba(212,160,74,0.3); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+  .sw .lg img { width: 120px; height: 120px; border-radius: 24px; }
+  .sw .nm { font-size: 64px; font-weight: 900; color: #F5EDE4; margin-top: 8px; }
+  .sw .tg { font-size: 32px; color: rgba(245,237,228,0.55); margin-bottom: 52px; }
+  .sw .perks { display: flex; flex-direction: column; gap: 24px; width: 100%; margin-bottom: 48px; }
+  .sw .pk { display: flex; align-items: center; gap: 16px; justify-content: flex-end; color: #F5EDE4; font-size: 34px; font-weight: 600; }
+  .sw .pk-ic { width: 52px; height: 52px; border-radius: 26px; background: rgba(212,160,74,0.2); display: flex; align-items: center; justify-content: center; font-size: 24px; }
+  .sw .cta { background: #D4A04A; color: #1A1210; font-size: 38px; font-weight: 800; padding: 32px; border-radius: 24px; width: 100%; }
+  .sw .sk { color: rgba(245,237,228,0.3); font-size: 28px; margin-top: 24px; }
+
+  /* Menu — list view like real app */
+  .sm { background: #F8FAFC; }
+  .sm .hdr { background: linear-gradient(135deg, #1E3A8A, #2563EB); padding: 120px 36px 36px; border-radius: 0 0 44px 44px; }
+  .sm .hdr-top { display: flex; justify-content: space-between; align-items: center; }
+  .sm .hdr h3 { color: #fff; font-size: 44px; font-weight: 800; }
+  .sm .hdr .cnt { background: rgba(255,255,255,0.2); color: #fff; padding: 8px 20px; border-radius: 16px; font-size: 24px; font-weight: 600; }
+  .sm .search { margin: 16px 36px 0; background: #fff; border-radius: 20px; padding: 18px 24px; display: flex; align-items: center; gap: 12px; direction: rtl; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .sm .search-ic { color: #94A3B8; font-size: 26px; }
+  .sm .search-txt { color: #94A3B8; font-size: 26px; }
+  .sm .cats { display: flex; gap: 12px; padding: 22px 30px; overflow: hidden; }
+  .sm .ct { padding: 12px 24px; border-radius: 36px; font-size: 24px; font-weight: 700; white-space: nowrap; }
+  .sm .ct.on { background: #2563EB; color: #fff; }
+  .sm .ct.off { background: #EFF6FF; color: #2563EB; }
+  .sm .list { display: flex; flex-direction: column; gap: 14px; padding: 0 28px; }
+  .sm .item { background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; direction: rtl; border: 1px solid #E2E8F0; }
+  .sm .item img { width: 160px; height: 140px; object-fit: cover; flex-shrink: 0; }
+  .sm .item-i { flex: 1; padding: 16px 20px; text-align: right; display: flex; flex-direction: column; justify-content: center; }
+  .sm .item-n { font-size: 28px; font-weight: 700; color: #0F172A; }
+  .sm .item-desc { font-size: 20px; color: #64748B; margin-top: 4px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .sm .item-bot { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+  .sm .item-p { font-size: 28px; color: #2563EB; font-weight: 800; }
+  .sm .item-add { width: 44px; height: 44px; border-radius: 22px; background: #2563EB; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 28px; font-weight: 700; }
+  .sm .item-fav { position: absolute; top: 10px; left: 10px; }
+
+  /* Loyalty */
+  .sl { background: #F8FAFC; }
+  .sl .hdr { background: linear-gradient(135deg, #1E3A8A, #2563EB); padding: 120px 36px 80px; text-align: center; border-radius: 0 0 48px 48px; }
+  .sl .hdr h3 { color: #fff; font-size: 44px; font-weight: 800; }
+  .sl .hdr p { color: rgba(255,255,255,0.65); font-size: 28px; margin-top: 6px; }
+  .sl .tier-badge { display: inline-flex; align-items: center; gap: 10px; background: rgba(232,184,109,0.2); border: 2px solid rgba(232,184,109,0.4); padding: 8px 28px; border-radius: 20px; margin-top: 16px; }
+  .sl .tier-badge span { font-size: 26px; font-weight: 700; color: #E8B86D; }
+  .sl .card { background: linear-gradient(145deg, #1E3A8A, #2563EB, #3B82F6); margin: -44px 32px 0; border-radius: 40px; padding: 48px 40px; position: relative; z-index: 1; box-shadow: 0 16px 50px rgba(37,99,235,0.35); overflow: hidden; }
+  .sl .card::before { content: ''; position: absolute; top: -40px; right: -40px; width: 200px; height: 200px; border-radius: 50%; background: rgba(255,255,255,0.04); }
+  .sl .card::after { content: ''; position: absolute; bottom: -60px; left: -30px; width: 180px; height: 180px; border-radius: 50%; background: rgba(255,255,255,0.03); }
+  .sl .card > * { position: relative; z-index: 1; }
+  .sl .card-h { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+  .sl .card-h-title { color: #fff; font-size: 30px; font-weight: 800; }
+  .sl .card-h-count { color: rgba(255,255,255,0.7); font-size: 26px; font-weight: 600; }
+  .sl .stps { display: flex; gap: 14px; justify-content: center; }
+  .sl .stp { width: 110px; height: 110px; border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; }
+  .sl .stp img { width: 70%; height: 70%; object-fit: cover; border-radius: 50%; }
+  .sl .stp.f { background: rgba(255,255,255,0.15); border: 4px solid rgba(255,255,255,0.7); }
+  .sl .stp.f::after { content: '✓'; position: absolute; bottom: -4px; right: -4px; width: 32px; height: 32px; border-radius: 50%; background: #4CAF50; color: #fff; font-size: 18px; display: flex; align-items: center; justify-content: center; font-weight: 800; }
+  .sl .stp.e { background: rgba(255,255,255,0.05); border: 4px dashed rgba(255,255,255,0.2); }
+  .sl .stp.e::after { content: '?'; color: rgba(255,255,255,0.2); font-size: 36px; font-weight: 700; }
+  .sl .stp.g { background: linear-gradient(135deg, #E8B86D, #D4A04A); border: 4px solid #F5D78E; font-size: 44px; box-shadow: 0 4px 20px rgba(232,184,109,0.4); }
+  .sl .prog-bar { margin-top: 32px; }
+  .sl .prog-track { height: 14px; background: rgba(255,255,255,0.1); border-radius: 7px; overflow: hidden; }
+  .sl .prog-fill { height: 100%; width: 60%; background: linear-gradient(90deg, #E8B86D, #F5D78E); border-radius: 7px; }
+  .sl .prog-text { color: #fff; text-align: center; font-size: 28px; font-weight: 600; margin-top: 14px; }
+  .sl .sts { display: flex; gap: 16px; padding: 32px 32px; }
+  .sl .st { flex: 1; background: #fff; border-radius: 24px; padding: 28px 16px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+  .sl .st-v { font-size: 44px; font-weight: 800; color: #2563EB; }
+  .sl .st-l { font-size: 22px; color: #64748B; margin-top: 4px; }
+  .sl .streak { background: #fff; border-radius: 24px; margin: 0 32px; padding: 24px 28px; display: flex; align-items: center; gap: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); direction: rtl; }
+  .sl .streak-ic { width: 60px; height: 60px; border-radius: 30px; background: linear-gradient(135deg, #FEF3C7, #FDE68A); display: flex; align-items: center; justify-content: center; font-size: 30px; }
+  .sl .streak-t { flex: 1; text-align: right; }
+  .sl .streak-l { font-size: 26px; font-weight: 700; color: #0F172A; }
+  .sl .streak-d { font-size: 20px; color: #64748B; margin-top: 2px; }
+
+  /* Deals */
+  .sd { background: #F8FAFC; }
+  .sd .hdr { background: linear-gradient(135deg, #1E3A8A, #2563EB); padding: 120px 36px 40px; text-align: center; border-radius: 0 0 48px 48px; }
+  .sd .hdr h3 { color: #fff; font-size: 44px; font-weight: 800; }
+  .sd .dc { background: #fff; border-radius: 28px; margin: 20px 32px 0; overflow: hidden; box-shadow: 0 3px 14px rgba(0,0,0,0.06); }
+  .sd .dc img { width: 100%; height: 190px; object-fit: cover; }
+  .sd .dc-i { padding: 20px 28px; text-align: right; }
+  .sd .dc-t { font-size: 32px; font-weight: 800; color: #0F172A; }
+  .sd .dc-d { font-size: 24px; color: #64748B; margin-top: 6px; line-height: 1.35; }
+  .sd .dc-b { display: inline-block; background: #EFF6FF; color: #2563EB; padding: 6px 16px; border-radius: 10px; font-size: 20px; font-weight: 700; margin-top: 8px; }
+
+  /* Cart */
+  .sc { background: #F8FAFC; display: flex; flex-direction: column; }
+  .sc .hdr { background: #fff; padding: 120px 36px 24px; text-align: center; border-bottom: 2px solid #E2E8F0; }
+  .sc .hdr h3 { font-size: 40px; font-weight: 700; color: #0F172A; }
+  .sc .items { flex: 1; padding: 24px 28px; display: flex; flex-direction: column; gap: 16px; }
+  .sc .ci { background: #fff; border-radius: 24px; padding: 20px; display: flex; gap: 20px; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04); direction: rtl; }
+  .sc .ci img { width: 100px; height: 100px; border-radius: 20px; object-fit: cover; flex-shrink: 0; }
+  .sc .ci-i { flex: 1; text-align: right; }
+  .sc .ci-n { font-size: 30px; font-weight: 700; color: #0F172A; }
+  .sc .ci-d { font-size: 22px; color: #64748B; margin-top: 2px; }
+  .sc .ci-p { font-size: 28px; font-weight: 700; color: #2563EB; margin-top: 6px; }
+  .sc .ci-q { display: flex; align-items: center; gap: 14px; direction: ltr; }
+  .sc .ci-qb { width: 40px; height: 40px; border-radius: 12px; border: 2px solid #2563EB; display: flex; align-items: center; justify-content: center; color: #2563EB; font-size: 24px; font-weight: 700; }
+  .sc .ci-qn { font-size: 28px; font-weight: 700; color: #0F172A; }
+  .sc .foot { background: #fff; padding: 32px 36px; border-top: 2px solid #E2E8F0; }
+  .sc .tot { display: flex; justify-content: space-between; font-size: 40px; font-weight: 800; color: #0F172A; margin-bottom: 20px; }
+  .sc .disc { display: flex; justify-content: space-between; font-size: 26px; color: #4CAF50; font-weight: 600; margin-bottom: 12px; }
+  .sc .cta-b { background: #2563EB; color: #fff; font-size: 38px; font-weight: 800; padding: 32px; border-radius: 24px; text-align: center; }
+
+  /* Profile */
+  .sp { background: #F8FAFC; }
+  .sp .hero { background: linear-gradient(135deg, #1E3A8A, #2563EB); padding: 120px 40px 48px; text-align: center; border-radius: 0 0 48px 48px; }
+  .sp .av { width: 120px; height: 120px; border-radius: 60px; background: rgba(255,255,255,0.2); border: 4px solid rgba(255,255,255,0.4); margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 46px; font-weight: 800; color: #fff; }
+  .sp .nm { font-size: 48px; font-weight: 800; color: #fff; }
+  .sp .bdg { display: inline-block; background: rgba(232,184,109,0.2); color: #E8B86D; padding: 6px 24px; border-radius: 16px; font-size: 24px; font-weight: 700; margin-top: 8px; border: 1px solid rgba(232,184,109,0.3); }
+  .sp .ph-s { font-size: 24px; color: rgba(255,255,255,0.5); margin-top: 6px; }
+  .sp .sts { display: flex; background: rgba(255,255,255,0.1); border-radius: 24px; padding: 28px; margin-top: 28px; border: 1px solid rgba(255,255,255,0.08); }
+  .sp .st { flex: 1; text-align: center; }
+  .sp .st-v { font-size: 44px; font-weight: 800; color: #fff; }
+  .sp .st-l { font-size: 22px; color: rgba(255,255,255,0.55); }
+  .sp .st-d { width: 1px; background: rgba(255,255,255,0.12); }
+  .sp .rows { padding: 28px 32px; }
+  .sp .rw { background: #fff; border-radius: 20px; padding: 24px 28px; display: flex; align-items: center; gap: 16px; margin-bottom: 12px; box-shadow: 0 1px 6px rgba(0,0,0,0.04); direction: rtl; }
+  .sp .rw-ic { width: 56px; height: 56px; border-radius: 28px; background: #EFF6FF; display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0; }
+  .sp .rw-t { flex: 1; text-align: right; }
+  .sp .rw-l { font-size: 28px; font-weight: 700; color: #0F172A; }
+  .sp .rw-d { font-size: 22px; color: #64748B; margin-top: 2px; }
+  .sp .rw-arr { color: #94A3B8; font-size: 24px; }
+</style>
+</head>
+<body>
+
+<!-- ══ 1. WELCOME ══ -->
+<div class="ss" id="ss1">
+  <div class="bg bg1"></div>
+  <div class="glow g1"></div><div class="glow g2"></div>
+  <div class="top">
+    <div class="badge"><div class="badge-dot"></div>מועדון לקוחות</div>
+    <div class="title"><span class="gold">הפסקת קפה</span><br><span class="wh">חווית קפה מושלמת</span></div>
+    <div class="sub">הצטרפו למועדון והתחילו ליהנות</div>
+  </div>
+  <div class="pw"><div class="ph"><div class="scr sw">
+    <div class="bg-img"></div>
+    <div class="lg"><img src="../images/icon.png" alt="" style="width:120px;height:120px;border-radius:24px;"></div>
+    <div class="nm">הפסקת קפה</div>
+    <div class="tg">הקפה הכי טוב באשקלון</div>
+    <div class="perks">
+      <div class="pk"><span>הקפה ה-5 עלינו</span><div class="pk-ic">☕</div></div>
+      <div class="pk"><span>הפתעות ומבצעים בלעדיים</span><div class="pk-ic">🎁</div></div>
+      <div class="pk"><span>מועדון VIP עם הטבות</span><div class="pk-ic">⭐</div></div>
+      <div class="pk"><span>מתנת יום הולדת</span><div class="pk-ic">✨</div></div>
+    </div>
+    <div class="cta">הרשמה / התחברות</div>
+    <div class="sk">המשך כאורח</div>
+  </div></div></div>
+  <div class="fade"></div>
+  <div class="bot">
+    <div class="ft"><div class="ft-v">VIP</div><div class="ft-l">דרגות הנחה</div></div>
+    <div class="ft"><div class="ft-v">5</div><div class="ft-l">קפה למתנה</div></div>
+    <div class="ft"><div class="ft-v">WhatsApp</div><div class="ft-l">אימות מהיר</div></div>
+  </div>
+</div>
+
+<!-- ══ 2. MENU ══ -->
+<div class="ss" id="ss2">
+  <div class="bg bg2"></div>
+  <div class="glow g1" style="background:rgba(37,99,235,0.12)"></div><div class="glow g2" style="background:rgba(37,99,235,0.05)"></div>
+  <div class="top">
+    <div class="badge"><div class="badge-dot"></div>תפריט דיגיטלי</div>
+    <div class="title"><span class="gold">הזמינו מראש</span><br><span class="wh">בלי לחכות בתור</span></div>
+    <div class="sub">תפריט מלא עם התאמה אישית</div>
+  </div>
+  <div class="pw"><div class="ph"><div class="scr sm">
+    <div class="hdr">
+      <div class="hdr-top"><h3>התפריט שלנו</h3><div class="cnt">85 פריטים</div></div>
+    </div>
+    <div class="search"><span class="search-ic">🔍</span><span class="search-txt">חפשו פריט בתפריט...</span></div>
+    <div class="cats">
+      <div class="ct on">מאפים</div><div class="ct off">משקאות חמים</div><div class="ct off">שתייה קרה</div><div class="ct off">כריכים</div>
+    </div>
+    <div class="list">
+      <div class="item">
+        <img src="img/croissant-butter.png" alt="">
+        <div class="item-i">
+          <div class="item-n">קרואסון חמאה</div>
+          <div class="item-desc">קרואסון חמאה מדורג עם שכבות אווריריות וזהובות</div>
+          <div class="item-bot"><div class="item-p">₪18</div><div class="item-add">+</div></div>
+        </div>
+      </div>
+      <div class="item">
+        <img src="img/croissant-almond.png" alt="">
+        <div class="item-i">
+          <div class="item-n">קרואסון שקדים</div>
+          <div class="item-desc">קרואסון עם מילוי קרם שקדים ושקדים קלויים</div>
+          <div class="item-bot"><div class="item-p">₪18</div><div class="item-add">+</div></div>
+        </div>
+      </div>
+      <div class="item">
+        <img src="img/cinnamon-roll-classic.png" alt="">
+        <div class="item-i">
+          <div class="item-n">סינבון קלאסי</div>
+          <div class="item-desc">קרם קינמון ארומטי עם ציפוי קלאסי</div>
+          <div class="item-bot"><div class="item-p">₪20</div><div class="item-add">+</div></div>
+        </div>
+      </div>
+      <div class="item">
+        <img src="img/pain-au-chocolat.png" alt="">
+        <div class="item-i">
+          <div class="item-n">פאן שוקולד</div>
+          <div class="item-desc">מאפה צרפתי קלאסי עם מילוי שוקולד מריר</div>
+          <div class="item-bot"><div class="item-p">₪18</div><div class="item-add">+</div></div>
+        </div>
+      </div>
+      <div class="item">
+        <img src="img/croissant-raspberry.png" alt="">
+        <div class="item-i">
+          <div class="item-n">קרואסון פטל</div>
+          <div class="item-desc">קרואסון חמאה עם פסי פטל אדומים</div>
+          <div class="item-bot"><div class="item-p">₪22</div><div class="item-add">+</div></div>
+        </div>
+      </div>
+    </div>
+  </div></div></div>
+  <div class="fade"></div>
+  <div class="bot">
+    <div class="ft"><div class="ft-v">85+</div><div class="ft-l">פריטים</div></div>
+    <div class="ft"><div class="ft-v">התאמה</div><div class="ft-l">אישית</div></div>
+    <div class="ft"><div class="ft-v">מיידי</div><div class="ft-l">עדכון תפריט</div></div>
+  </div>
+</div>
+
+<!-- ══ 3. LOYALTY ══ -->
+<div class="ss" id="ss3">
+  <div class="bg bg3"></div>
+  <div class="glow g1"></div><div class="glow g2"></div>
+  <div class="top">
+    <div class="badge"><div class="badge-dot"></div>כרטיס נאמנות</div>
+    <div class="title"><span class="gold">הקפה ה-5</span><br><span class="wh">עלינו!</span></div>
+    <div class="sub">צברו חותמות וקבלו מתנות</div>
+  </div>
+  <div class="pw"><div class="ph"><div class="scr sl">
+    <div class="hdr">
+      <h3>כרטיס נאמנות</h3>
+      <p>הקפה ה-5 עלינו!</p>
+      <div class="tier-badge"><span>⭐ לקוח כסף — 5% הנחה</span></div>
+    </div>
+    <div class="card">
+      <div class="card-h">
+        <div class="card-h-title">החותמות שלך</div>
+        <div class="card-h-count">3 / 5</div>
+      </div>
+      <div class="stps">
+        <div class="stp f"><img src="img/hafuch-small.png" alt=""></div>
+        <div class="stp f"><img src="img/americano-small.png" alt=""></div>
+        <div class="stp f"><img src="img/iced-coffee.png" alt=""></div>
+        <div class="stp e"></div>
+        <div class="stp g">🎁</div>
+      </div>
+      <div class="prog-bar">
+        <div class="prog-track"><div class="prog-fill"></div></div>
+        <div class="prog-text">עוד 2 חותמות למתנה!</div>
+      </div>
+    </div>
+    <div class="sts">
+      <div class="st"><div class="st-v">12</div><div class="st-l">כוסות קפה</div></div>
+      <div class="st"><div class="st-v">2</div><div class="st-l">מתנות</div></div>
+      <div class="st"><div class="st-v">5%</div><div class="st-l">הנחה קבועה</div></div>
+    </div>
+    <div class="streak">
+      <div class="streak-ic">🔥</div>
+      <div class="streak-t">
+        <div class="streak-l">רצף 4 ימים!</div>
+        <div class="streak-d">עוד 3 ימים לחותמת בונוס</div>
+      </div>
+    </div>
+  </div></div></div>
+  <div class="fade"></div>
+  <div class="bot">
+    <div class="ft"><div class="ft-v">דיגיטלי</div><div class="ft-l">ללא כרטיס</div></div>
+    <div class="ft"><div class="ft-v">3 דרגות</div><div class="ft-l">ברונזה כסף זהב</div></div>
+    <div class="ft"><div class="ft-v">אוטומטי</div><div class="ft-l">צבירת חותמות</div></div>
+  </div>
+</div>
+
+<!-- ══ 4. DEALS ══ -->
+<div class="ss" id="ss4">
+  <div class="bg bg4"></div>
+  <div class="glow g1" style="background:rgba(236,72,153,0.1)"></div><div class="glow g2"></div>
+  <div class="top">
+    <div class="badge"><div class="badge-dot"></div>הטבות בלעדיות</div>
+    <div class="title"><span class="gold">מבצעים</span><br><span class="wh">רק באפליקציה</span></div>
+    <div class="sub">הפתעות, הנחות ומתנות</div>
+  </div>
+  <div class="pw"><div class="ph"><div class="scr sd">
+    <div class="hdr"><h3>מבצעים והטבות</h3></div>
+    <div class="dc"><img src="img/promo-drinks-lineup.png" alt=""><div class="dc-i"><div class="dc-t">Happy Hour! 15:00-17:00</div><div class="dc-d">20% הנחה על כל המשקאות הקרים בימי חול</div><div class="dc-b">פעיל עכשיו</div></div></div>
+    <div class="dc"><img src="img/promo-dessert-party.png" alt=""><div class="dc-i"><div class="dc-t">יום הולדת? מגיע לך!</div><div class="dc-d">בחודש יום ההולדת - משקה + מאפה במתנה</div><div class="dc-b">אישי</div></div></div>
+    <div class="dc"><img src="img/promo-couple-sharing.png" alt=""><div class="dc-i"><div class="dc-t">הביאו חבר — קבלו חותמת!</div><div class="dc-d">הזמינו חבר חדש וקבלו חותמת בונוס</div><div class="dc-b">ללא הגבלה</div></div></div>
+  </div></div></div>
+  <div class="fade"></div>
+  <div class="bot">
+    <div class="ft"><div class="ft-v">20%</div><div class="ft-l">Happy Hour</div></div>
+    <div class="ft"><div class="ft-v">מתנה</div><div class="ft-l">יום הולדת</div></div>
+    <div class="ft"><div class="ft-v">הפנייה</div><div class="ft-l">חותמת בונוס</div></div>
+  </div>
+</div>
+
+<!-- ══ 5. CART ══ -->
+<div class="ss" id="ss5">
+  <div class="bg bg5"></div>
+  <div class="glow g1" style="background:rgba(16,185,129,0.1)"></div><div class="glow g2"></div>
+  <div class="top">
+    <div class="badge"><div class="badge-dot"></div>הזמנה מהירה</div>
+    <div class="title"><span class="gold">הזמינו</span><br><span class="wh">ישירות מהאפליקציה</span></div>
+    <div class="sub">ההזמנה מחכה לכם מוכנה</div>
+  </div>
+  <div class="pw"><div class="ph"><div class="scr sc">
+    <div class="hdr"><h3>העגלה שלי</h3></div>
+    <div class="items">
+      <div class="ci"><img src="img/hafuch-large.png" alt=""><div class="ci-i"><div class="ci-n">הפוך גדול</div><div class="ci-d">חלב שיבולת שועל, ללא סוכר</div><div class="ci-p">₪14</div></div><div class="ci-q"><div class="ci-qb">-</div><div class="ci-qn">1</div><div class="ci-qb">+</div></div></div>
+      <div class="ci"><img src="img/croissant-almond.png" alt=""><div class="ci-i"><div class="ci-n">קרואסון שקדים</div><div class="ci-d"></div><div class="ci-p">₪36</div></div><div class="ci-q"><div class="ci-qb">-</div><div class="ci-qn">2</div><div class="ci-qb">+</div></div></div>
+      <div class="ci"><img src="img/sandwich-salmon.png" alt=""><div class="ci-i"><div class="ci-n">כריך סלמון</div><div class="ci-d">לחם מחמצת, גבינת שמנת</div><div class="ci-p">₪45</div></div><div class="ci-q"><div class="ci-qb">-</div><div class="ci-qn">1</div><div class="ci-qb">+</div></div></div>
+    </div>
+    <div class="foot">
+      <div class="disc"><span>-5% הנחת כסף</span><span>-₪5</span></div>
+      <div class="tot"><span>₪90</span><span>סה"כ</span></div>
+      <div class="cta-b">הזמן עכשיו</div>
+    </div>
+  </div></div></div>
+  <div class="fade"></div>
+  <div class="bot">
+    <div class="ft"><div class="ft-v">מאובטח</div><div class="ft-l">תשלום בטוח</div></div>
+    <div class="ft"><div class="ft-v">מהיר</div><div class="ft-l">הזמנה מראש</div></div>
+    <div class="ft"><div class="ft-v">הנחת VIP</div><div class="ft-l">אוטומטית</div></div>
+  </div>
+</div>
+
+<!-- ══ 6. PROFILE ══ -->
+<div class="ss" id="ss6">
+  <div class="bg bg6"></div>
+  <div class="glow g1" style="background:rgba(37,99,235,0.1)"></div><div class="glow g2"></div>
+  <div class="top">
+    <div class="badge"><div class="badge-dot"></div>פרופיל אישי</div>
+    <div class="title"><span class="gold">הכל</span><br><span class="wh">במקום אחד</span></div>
+    <div class="sub">היסטוריה, הטבות ופרטים</div>
+  </div>
+  <div class="pw"><div class="ph"><div class="scr sp">
+    <div class="hero">
+      <div class="av">נע</div>
+      <div class="nm">נעם</div>
+      <div class="bdg">לקוח כסף</div>
+      <div class="ph-s">+972 53-306-2022</div>
+      <div class="sts">
+        <div class="st"><div class="st-v">12</div><div class="st-l">כוסות קפה</div></div>
+        <div class="st-d"></div>
+        <div class="st"><div class="st-v">2</div><div class="st-l">מתנות</div></div>
+      </div>
+    </div>
+    <div class="rows">
+      <div class="rw"><div class="rw-ic">📋</div><div class="rw-t"><div class="rw-l">היסטוריית הזמנות</div><div class="rw-d">צפייה בהזמנות קודמות והזמנה חוזרת</div></div><div class="rw-arr">‹</div></div>
+      <div class="rw"><div class="rw-ic">🎟</div><div class="rw-t"><div class="rw-l">הקופונים שלי</div><div class="rw-d">2 קופונים פעילים</div></div><div class="rw-arr">‹</div></div>
+      <div class="rw"><div class="rw-ic">🌙</div><div class="rw-t"><div class="rw-l">מצב כהה</div></div></div>
+      <div class="rw"><div class="rw-ic">📍</div><div class="rw-t"><div class="rw-l">נווטו אלינו</div><div class="rw-d">טיילת הצפונית, אשקלון</div></div><div class="rw-arr">‹</div></div>
+      <div class="rw"><div class="rw-ic">📞</div><div class="rw-t"><div class="rw-l">דברו איתנו</div><div class="rw-d">08-1234567</div></div><div class="rw-arr">‹</div></div>
+    </div>
+  </div></div></div>
+  <div class="fade"></div>
+  <div class="bot">
+    <div class="ft"><div class="ft-v">מאובטח</div><div class="ft-l">אימות WhatsApp</div></div>
+    <div class="ft"><div class="ft-v">מצב כהה</div><div class="ft-l">עיצוב מותאם</div></div>
+    <div class="ft"><div class="ft-v">ניווט</div><div class="ft-l">Waze ישיר</div></div>
+  </div>
+</div>
+
+</body>
+</html>

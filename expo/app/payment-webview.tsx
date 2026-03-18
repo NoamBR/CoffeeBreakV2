@@ -113,7 +113,7 @@ export default function PaymentWebViewScreen() {
           onNavigationStateChange={handleNavigationChange}
           onLoadStart={() => setLoading(true)}
           onLoadEnd={() => setLoading(false)}
-          originWhitelist={[...PAYME_CONFIG.allowedOrigins.map(o => o + '*'), 'rork-app://*']}
+          originWhitelist={[...PAYME_CONFIG.allowedOrigins.map(o => o + '*'), 'coffeebreak://*']}
           javaScriptEnabled
           domStorageEnabled
           startInLoadingState

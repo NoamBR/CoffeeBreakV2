@@ -6,6 +6,7 @@ import { Clock, Gift, Users, Sparkles, Tag } from 'lucide-react-native';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import type { ColorScheme } from '@/constants/colors';
 import { deals } from '@/data/deals';
+import { resolveImageSource } from '@/utils/resolveAsset';
 
 const dealIcons = {
   happy_hour: Clock,
@@ -39,7 +40,7 @@ export default function DealDetail() {
         {deal.image ? (
           <View style={styles.heroPhoto}>
             <Image
-              source={deal.image}
+              source={resolveImageSource(deal.image)}
               style={styles.heroImage}
               contentFit="cover"
             />

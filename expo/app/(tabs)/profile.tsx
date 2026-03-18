@@ -3,12 +3,13 @@ import { View, Text, StyleSheet, ScrollView, Pressable, Linking, Alert, TextInpu
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { Coffee, Phone, Instagram, LogOut, ChevronLeft, Heart, Leaf, Users, Navigation, Facebook, Clock, ClipboardList, Lock, X, Moon } from 'lucide-react-native';
+import { Coffee, Phone, Instagram, LogOut, ChevronLeft, Heart, Leaf, Users, Navigation, Facebook, Clock, ClipboardList, Lock, X, Moon, FileText, Shield } from 'lucide-react-native';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { useThemeStore } from '@/stores/themeStore';
 import { useUserStore } from '@/stores/userStore';
 import { useLoyaltyStore } from '@/stores/loyaltyStore';
 import { useAdminStore } from '@/stores/adminStore';
+import { useCartStore } from '@/stores/cartStore';
 import storeInfo, { brandStory } from '@/data/storeInfo';
 import TierBadge from '@/components/TierBadge';
 import AmbassadorWidget from '@/components/AmbassadorWidget';
@@ -62,7 +63,7 @@ export default function ProfileScreen() {
         {
           text: 'התנתק',
           style: 'destructive',
-          onPress: () => resetUser(),
+          onPress: () => { resetUser(); useCartStore.getState().clearCart(); },
         },
       ]
     );
@@ -251,6 +252,34 @@ export default function ProfileScreen() {
           <View style={styles.hoursChip}>
             <Clock size={16} color={colors.success} />
             <Text style={styles.hoursChipText}>פתוח 24/7</Text>
+          </View>
+
+          {/* Legal */}
+          <View style={styles.legalCard}>
+            <Pressable
+              style={styles.contactRow}
+              onPress={() => router.push('/legal/privacy')}
+            >
+              <ChevronLeft size={16} color={colors.inactive} />
+              <View style={styles.contactInfo}>
+                <Text style={styles.contactLabel}>מדיניות פרטיות</Text>
+              </View>
+              <View style={styles.contactIconWrap}>
+                <Shield size={20} color={colors.accent} />
+              </View>
+            </Pressable>
+            <Pressable
+              style={[styles.contactRow, { borderBottomWidth: 0 }]}
+              onPress={() => router.push('/legal/terms')}
+            >
+              <ChevronLeft size={16} color={colors.inactive} />
+              <View style={styles.contactInfo}>
+                <Text style={styles.contactLabel}>תנאי שימוש</Text>
+              </View>
+              <View style={styles.contactIconWrap}>
+                <FileText size={20} color={colors.accent} />
+              </View>
+            </Pressable>
           </View>
 
           {/* Logout */}
@@ -620,6 +649,19 @@ const getStyles = (colors: ColorScheme) => StyleSheet.create({
     fontSize: 15,
     fontWeight: '700',
     color: colors.success,
+  },
+
+  // Legal
+  legalCard: {
+    backgroundColor: colors.card,
+    borderRadius: 14,
+    overflow: 'hidden',
+    marginTop: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 2,
   },
 
   // Logout

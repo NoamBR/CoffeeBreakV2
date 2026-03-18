@@ -4,18 +4,14 @@ import { Save } from 'lucide-react-native';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import type { ColorScheme } from '@/constants/colors';
 import { useSettingsStore } from '@/stores/settingsStore';
-import { useAdminStore } from '@/stores/adminStore';
 
 export default function SettingsScreen() {
   const settings = useSettingsStore();
-  const { managerPin, workerPin, updateManagerPin, updateWorkerPin } = useAdminStore();
   const colors = useThemeColors();
   const styles = getStyles(colors);
   const sStyles = getSettingStyles(colors);
 
   const [staffPin, setStaffPin] = useState(settings.staffPin);
-  const [mgrPin, setMgrPin] = useState(managerPin);
-  const [wrkPin, setWrkPin] = useState(workerPin);
   const [stampsGoal, setStampsGoal] = useState(settings.stampsGoal.toString());
   const [silverThreshold, setSilverThreshold] = useState(settings.tierThresholds.silver.toString());
   const [goldThreshold, setGoldThreshold] = useState(settings.tierThresholds.gold.toString());
@@ -38,13 +34,6 @@ export default function SettingsScreen() {
     });
     settings.updateSetting('streakBonusDay', parseInt(streakBonus) || 7);
 
-    if (mgrPin && mgrPin.length === 4) {
-      updateManagerPin(mgrPin);
-    }
-    if (wrkPin && wrkPin.length === 4) {
-      updateWorkerPin(wrkPin);
-    }
-
     Alert.alert('נשמר!', 'ההגדרות עודכנו בהצלחה.');
   };
 
@@ -54,8 +43,6 @@ export default function SettingsScreen() {
       <Text style={styles.sectionTitle}>קודי גישה</Text>
       <View style={styles.card}>
         <SettingRow label="קוד צוות (חותמות)" value={staffPin} onChangeText={setStaffPin} keyboardType="number-pad" maxLength={4} styles={sStyles} />
-        <SettingRow label="קוד מנהל" value={mgrPin} onChangeText={setMgrPin} keyboardType="number-pad" maxLength={4} styles={sStyles} />
-        <SettingRow label="קוד עובד" value={wrkPin} onChangeText={setWrkPin} keyboardType="number-pad" maxLength={4} styles={sStyles} />
       </View>
 
       {/* Loyalty */}

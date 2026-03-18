@@ -28,7 +28,14 @@ const corsHeaders = {
 const json = (data: unknown, status = 200) =>
   new Response(JSON.stringify(data), {
     status,
-    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    headers: {
+      ...corsHeaders,
+      'Content-Type': 'application/json',
+      'X-Content-Type-Options': 'nosniff',
+      'Cache-Control': 'no-store',
+      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+      'X-Frame-Options': 'DENY',
+    },
   });
 
 serve(async (req) => {
@@ -125,8 +132,8 @@ serve(async (req) => {
         buyer_name: customerName || '',
         buyer_phone: customerPhone || '',
         sale_callback_url: callbackUrl,
-        sale_return_url: `rork-app://payment-result?status=success&order_id=${orderId}`,
-        sale_failure_url: `rork-app://payment-result?status=failed&order_id=${orderId}`,
+        sale_return_url: `coffeebreak://payment-result?status=success&order_id=${orderId}`,
+        sale_failure_url: `coffeebreak://payment-result?status=failed&order_id=${orderId}`,
       }),
     });
 

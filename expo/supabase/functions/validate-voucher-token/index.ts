@@ -17,7 +17,7 @@ import { supabaseAdmin } from '../_shared/supabaseAdmin.ts';
 import { checkRateLimit } from '../_shared/rateLimit.ts';
 
 const VOUCHER_HMAC_SECRET = Deno.env.get('VOUCHER_HMAC_SECRET');
-const TOKEN_MAX_AGE_SECONDS = 65; // 5s grace over 60s generation window
+const TOKEN_MAX_AGE_SECONDS = 35; // 5s grace over 30s generation window (tightened from 65s)
 
 /** Convert hex string to Uint8Array for constant-time comparison */
 function hexToBytes(hex: string): Uint8Array {
@@ -182,6 +182,8 @@ function json(data: unknown, status = 200) {
       'Content-Type': 'application/json',
       'X-Content-Type-Options': 'nosniff',
       'Cache-Control': 'no-store',
+      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+      'X-Frame-Options': 'DENY',
     },
   });
 }

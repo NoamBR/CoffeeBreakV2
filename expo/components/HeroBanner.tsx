@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import type { ColorScheme } from '@/constants/colors';
 import { deals } from '@/data/deals';
+import { resolveImageSource } from '@/utils/resolveAsset';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = width - 80;
@@ -32,7 +33,7 @@ export default function HeroBanner() {
           {deal.image ? (
             <>
               <Image
-                source={deal.image}
+                source={resolveImageSource(deal.image)}
                 style={styles.cardImage}
                 contentFit="cover"
               />

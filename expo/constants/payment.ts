@@ -37,8 +37,8 @@ export const PAYME_CONFIG = {
     'https://secure.payme.io',
   ],
   // Deep link return URLs
-  returnUrl: 'rork-app://payment-result?status=success',
-  failureUrl: 'rork-app://payment-result?status=failed',
+  returnUrl: 'coffeebreak://payment-result?status=success',
+  failureUrl: 'coffeebreak://payment-result?status=failed',
   // Currency
   currency: 'ILS',
   // Default installments range (1 = no installments)

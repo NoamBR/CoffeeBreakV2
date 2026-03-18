@@ -115,12 +115,14 @@ Deno.serve(async (req) => {
   const qrPayload = `${voucher.barcode}|${timestamp}|${token}`;
 
   return new Response(
-    JSON.stringify({ token: qrPayload, expires_in: 60 }),
+    JSON.stringify({ token: qrPayload, expires_in: 30 }),
     {
       headers: {
         'Content-Type': 'application/json',
         'X-Content-Type-Options': 'nosniff',
         'Cache-Control': 'no-store',
+        'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+        'X-Frame-Options': 'DENY',
       },
     },
   );

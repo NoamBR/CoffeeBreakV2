@@ -1,18 +1,21 @@
-// Supabase Edge Function: Send OTP via WhatsApp (Meta Cloud API)
+// Supabase Edge Function: Generate OTP for WhatsApp verification
+// Flow: generate code → return to app → user sends code to business via wa.me link
 // Deploy: supabase functions deploy send-otp
-// Secrets: WHATSAPP_PHONE_NUMBER_ID, WHATSAPP_ACCESS_TOKEN, WHATSAPP_TEMPLATE_NAME
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') || '';
 const SUPABASE_SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
-const WA_PHONE_ID = Deno.env.get('WHATSAPP_PHONE_NUMBER_ID') || '';
-const WA_TOKEN = Deno.env.get('WHATSAPP_ACCESS_TOKEN') || '';
-const WA_TEMPLATE = Deno.env.get('WHATSAPP_TEMPLATE_NAME') || 'otp_code';
+
+// Business WhatsApp number for wa.me link (international format, no +)
+const WA_BUSINESS_NUMBER = Deno.env.get('WA_BUSINESS_NUMBER') || '';
 
 const OTP_EXPIRY_MINUTES = 5;
 const RATE_LIMIT_PER_HOUR = 5;
+
+// Demo account for App Store reviewers
+const DEMO_PHONE = '972500000000';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -22,7 +25,14 @@ const corsHeaders = {
 const json = (data: unknown, status = 200) =>
   new Response(JSON.stringify(data), {
     status,
-    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    headers: {
+      ...corsHeaders,
+      'Content-Type': 'application/json',
+      'X-Content-Type-Options': 'nosniff',
+      'Cache-Control': 'no-store',
+      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+      'X-Frame-Options': 'DENY',
+    },
   });
 
 function generateOtp(): string {
@@ -32,7 +42,6 @@ function generateOtp(): string {
   return num.toString();
 }
 
-// Normalize phone: ensure it starts with country code, no spaces/dashes
 function normalizePhone(phone: string): string {
   return phone.replace(/[\s\-\(\)]/g, '').replace(/^\+/, '');
 }
@@ -49,11 +58,13 @@ serve(async (req) => {
       return json({ error: 'Phone number is required' }, 400);
     }
 
-    if (!WA_PHONE_ID || !WA_TOKEN) {
-      return json({ error: 'WhatsApp not configured. Contact support.' }, 500);
+    const normalizedPhone = normalizePhone(phone);
+
+    // ── Demo mode: skip real OTP ─────────────────────────────
+    if (normalizedPhone === DEMO_PHONE) {
+      return json({ success: true, waLink: null, demo: true });
     }
 
-    const normalizedPhone = normalizePhone(phone);
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
     // ── Rate limiting ────────────────────────────────────────
@@ -72,7 +83,6 @@ serve(async (req) => {
     const code = generateOtp();
     const expiresAt = new Date(Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000).toISOString();
 
-    // Store in DB
     const { error: insertError } = await supabase
       .from('otp_codes')
       .insert({
@@ -86,47 +96,20 @@ serve(async (req) => {
       return json({ error: 'שגיאה פנימית. נסו שוב.' }, 500);
     }
 
-    // ── Send via WhatsApp ────────────────────────────────────
-    const waResponse = await fetch(
-      `https://graph.facebook.com/v21.0/${WA_PHONE_ID}/messages`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${WA_TOKEN}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          messaging_product: 'whatsapp',
-          to: normalizedPhone,
-          type: 'template',
-          template: {
-            name: WA_TEMPLATE,
-            language: { code: 'he' },
-            components: [
-              {
-                type: 'body',
-                parameters: [
-                  { type: 'text', text: code },
-                ],
-              },
-            ],
-          },
-        }),
-      }
-    );
+    // ── Build wa.me link ─────────────────────────────────────
+    const waText = encodeURIComponent(code);
+    const waLink = WA_BUSINESS_NUMBER
+      ? `https://wa.me/${WA_BUSINESS_NUMBER}?text=${waText}`
+      : null;
 
-    const waData = await waResponse.json();
+    console.log('OTP generated for', normalizedPhone, 'code:', code);
 
-    if (!waResponse.ok) {
-      console.error('WhatsApp API error:', waData);
-      return json({
-        error: 'לא הצלחנו לשלוח הודעה בוואטסאפ. ודאו שהמספר נכון.',
-      }, 400);
-    }
-
-    console.log('OTP sent to', normalizedPhone, 'messageId:', waData.messages?.[0]?.id);
-
-    return json({ success: true });
+    return json({
+      success: true,
+      code,
+      waLink,
+      expiresInSeconds: OTP_EXPIRY_MINUTES * 60,
+    });
   } catch (err) {
     console.error('send-otp error:', err);
     return json({ error: 'Internal server error' }, 500);

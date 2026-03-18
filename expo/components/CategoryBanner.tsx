@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import type { ColorScheme } from '@/constants/colors';
 import { MenuCategory } from '@/types';
+import { resolveImageSource } from '@/utils/resolveAsset';
 
 type CategoryFilter = MenuCategory | 'favorites';
 
@@ -45,7 +46,7 @@ export default function CategoryBanner({ category }: Props) {
 
   return (
     <View style={styles.container}>
-      <Image source={image} style={styles.image} contentFit="cover" />
+      <Image source={resolveImageSource(image)} style={styles.image} contentFit="cover" />
       <LinearGradient
         colors={['transparent', 'rgba(0,0,0,0.6)']}
         start={{ x: 0.3, y: 0 }}

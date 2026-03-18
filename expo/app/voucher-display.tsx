@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { View, Text, StyleSheet, Platform, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Platform, Pressable, Animated, Easing } from 'react-native';
 import { useLocalSearchParams, useFocusEffect } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ticket, Check, Clock, ShieldCheck } from 'lucide-react-native';
@@ -26,6 +26,19 @@ export default function VoucherDisplayScreen() {
   const [qrPayload, setQrPayload] = useState('');
   const [countdown, setCountdown] = useState(TOKEN_ROTATE_INTERVAL / 1000);
   const [tokenError, setTokenError] = useState(false);
+
+  // Pulsing border animation — makes screenshots visually stale
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+  useEffect(() => {
+    const pulse = Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, { toValue: 0.3, duration: 1000, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+        Animated.timing(pulseAnim, { toValue: 1, duration: 1000, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+      ])
+    );
+    pulse.start();
+    return () => pulse.stop();
+  }, [pulseAnim]);
 
   // Request a signed token from the server (HMAC-SHA256)
   // Falls back to barcode-only QR if server is unavailable
@@ -149,11 +162,18 @@ export default function VoucherDisplayScreen() {
           <>
             <Text style={styles.barcodeLabel}>סרקו את הקוד</Text>
             <View style={styles.qrContainer}>
+              {/* Animated live indicator — pulsing green dot + border glow */}
+              <Animated.View style={[styles.liveBorder, { opacity: pulseAnim }]} />
               {/* Watermark with user's phone for fraud prevention */}
               <View style={styles.watermark}>
                 <Text style={styles.watermarkText}>{userPhone}</Text>
               </View>
               <QRCode value={qrPayload} size={220} />
+            </View>
+            {/* Live indicator badge — makes screenshots obviously stale */}
+            <View style={styles.liveIndicator}>
+              <Animated.View style={[styles.liveDot, { opacity: pulseAnim }]} />
+              <Text style={styles.liveText}>LIVE</Text>
             </View>
             <View style={styles.tokenTimer}>
               <ShieldCheck size={14} color={colors.success} />
@@ -261,6 +281,39 @@ const getStyles = (colors: ColorScheme) => StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 12,
     elevation: 4,
+    overflow: 'hidden',
+  },
+  liveBorder: {
+    position: 'absolute',
+    top: -2,
+    left: -2,
+    right: -2,
+    bottom: -2,
+    borderRadius: 22,
+    borderWidth: 3,
+    borderColor: '#22C55E',
+    zIndex: 2,
+  },
+  liveIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#052E16',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  liveDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#22C55E',
+  },
+  liveText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#22C55E',
+    letterSpacing: 2,
   },
   watermark: {
     position: 'absolute',

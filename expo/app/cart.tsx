@@ -11,6 +11,7 @@ import { getTier, getTierConfig } from '@/utils/tiers';
 import { formatPrice } from '@/utils/formatPrice';
 import { formatCustomization } from '@/data/customizations';
 import { CartItem } from '@/types';
+import { resolveImageSource } from '@/utils/resolveAsset';
 
 export default function CartScreen() {
   const router = useRouter();
@@ -31,7 +32,7 @@ export default function CartScreen() {
     return (
       <View style={styles.itemCard}>
         <Image
-          source={typeof item.image === 'number' ? item.image : { uri: item.image }}
+          source={resolveImageSource(item.image)}
           style={styles.itemImage}
           contentFit="cover"
         />
@@ -123,9 +124,16 @@ export default function CartScreen() {
         </View>
         <Pressable
           style={({ pressed }) => [styles.orderBtn, pressed && { opacity: 0.85, transform: [{ scale: 0.97 }] }]}
-          onPress={() => router.push('/order-confirm')}
+          onPress={() => {
+            const { user } = useUserStore.getState();
+            if (!user || !user.phone) {
+              router.push('/onboarding');
+            } else {
+              router.push('/order-confirm');
+            }
+          }}
         >
-          <Text style={styles.orderBtnText}>הזמן עכשיו</Text>
+          <Text style={styles.orderBtnText}>{user?.phone ? 'הזמן עכשיו' : 'הירשם כדי להזמין'}</Text>
         </Pressable>
       </View>
     </View>

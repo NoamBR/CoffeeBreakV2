@@ -1,28 +1,58 @@
 {
   "expo": {
     "name": "הפסקת קפה",
-    "slug": "eq3spc2uk0hsq0tnzflzk",
+    "slug": "coffeebreak-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "rork-app",
+    "scheme": "coffeebreak",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "owner": "noambenro",
     "splash": {
       "image": "./assets/images/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#FFFFFF"
+      "backgroundColor": "#2C1810"
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "app.rork.eq3spc2uk0hsq0tnzflzk"
+      "bundleIdentifier": "com.coffeebreak.ashkelon",
+      "buildNumber": "2",
+      "infoPlist": {
+        "CFBundleDisplayName": "הפסקת קפה",
+        "NSCameraUsageDescription": "סריקת קודי QR למועדון הלקוחות",
+        "NSPhotoLibraryUsageDescription": "שמירת קופונים ושיתוף תוכן",
+        "NSPhotoLibraryAddUsageDescription": "שמירת קופונים לגלריה",
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "privacyManifests": {
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "CA92.1"
+            ]
+          },
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryDiskSpace",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "E174.1"
+            ]
+          }
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+        "backgroundColor": "#2C1810"
       },
-      "package": "app.rork.eq3spc2uk0hsq0tnzflzk"
+      "package": "com.coffeebreak.ashkelon",
+      "versionCode": 1,
+      "permissions": [
+        "CAMERA",
+        "VIBRATE"
+      ]
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
@@ -31,14 +61,23 @@
       [
         "expo-router",
         {
-          "origin": "https://rork.com/"
+          "origin": "https://coffeebreak.app/"
         }
       ],
       "expo-font",
-      "expo-web-browser"
+      "expo-web-browser",
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "6c59ea35-4dd9-4225-be97-cecfd403a9b2"
+      },
+      "router": {
+        "origin": "https://coffeebreak.app/"
+      }
     }
   }
 }

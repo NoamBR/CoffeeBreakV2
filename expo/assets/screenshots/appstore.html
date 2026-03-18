@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>App Store Screenshots — הפסקת קפה</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Heebo', sans-serif;
+    background: #1a1a1a;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    padding: 30px;
+    justify-content: center;
+  }
+
+  /* Each screenshot is 1290x2796 (6.7" iPhone) scaled down to fit screen */
+  .screenshot {
+    width: 430px;
+    height: 932px;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .marketing-top {
+    padding: 60px 32px 24px;
+    text-align: center;
+    width: 100%;
+    flex-shrink: 0;
+  }
+  .marketing-title {
+    font-size: 32px;
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .marketing-sub {
+    font-size: 16px;
+    font-weight: 500;
+    opacity: 0.8;
+  }
+
+  .phone-frame {
+    width: 320px;
+    flex: 1;
+    border-radius: 36px 36px 0 0;
+    overflow: hidden;
+    box-shadow: 0 -4px 30px rgba(0,0,0,0.3);
+    position: relative;
+  }
+  .phone-frame::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 100px; height: 28px;
+    background: #000;
+    border-radius: 0 0 16px 16px;
+    z-index: 10;
+  }
+
+  /* ── Screenshot 1: Welcome ── */
+  .ss-1 { background: linear-gradient(180deg, #1E3A8A, #3B82F6); }
+  .ss-1 .marketing-title { color: #fff; }
+  .ss-1 .marketing-sub { color: rgba(255,255,255,0.8); }
+
+  .screen-welcome {
+    width: 100%; height: 100%;
+    background: linear-gradient(180deg, rgba(44,24,16,0.9), rgba(61,43,31,0.95));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    position: relative;
+  }
+  .screen-welcome::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400') center/cover;
+    opacity: 0.25; z-index: 0;
+  }
+  .screen-welcome > * { position: relative; z-index: 1; }
+  .w-logo { font-size: 56px; margin-bottom: 8px; }
+  .w-name { font-size: 30px; font-weight: 900; color: #fff; }
+  .w-tag { font-size: 14px; color: rgba(255,255,255,0.7); margin-bottom: 28px; }
+  .w-perks { display: flex; flex-direction: column; gap: 12px; width: 100%; margin-bottom: 32px; }
+  .w-perk { display: flex; align-items: center; gap: 10px; justify-content: flex-end; color: #fff; font-size: 15px; font-weight: 600; }
+  .w-btn { background: #fff; color: #2C1810; font-size: 16px; font-weight: 800; padding: 14px; border-radius: 12px; width: 100%; text-align: center; }
+  .w-skip { color: rgba(255,255,255,0.4); font-size: 13px; margin-top: 14px; }
+
+  /* ── Screenshot 2: Menu ── */
+  .ss-2 { background: linear-gradient(180deg, #F59E0B, #D97706); }
+  .ss-2 .marketing-title { color: #fff; }
+  .ss-2 .marketing-sub { color: rgba(255,255,255,0.85); }
+
+  .screen-menu { width: 100%; height: 100%; background: #F8FAFC; overflow: hidden; }
+  .m-header { background: linear-gradient(135deg, #1E3A8A, #2563EB); padding: 44px 16px 16px; text-align: center; border-radius: 0 0 20px 20px; }
+  .m-header h2 { color: #fff; font-size: 18px; font-weight: 800; }
+  .m-cats { display: flex; gap: 6px; padding: 12px; overflow: hidden; }
+  .m-cat { background: #EFF6FF; color: #2563EB; padding: 6px 12px; border-radius: 16px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+  .m-cat.active { background: #2563EB; color: #fff; }
+  .m-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 0 12px; }
+  .m-item { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .m-item-img { height: 80px; display: flex; align-items: center; justify-content: center; font-size: 32px; }
+  .m-item-img.c1 { background: linear-gradient(135deg, #FEF3C7, #FDE68A); }
+  .m-item-img.c2 { background: linear-gradient(135deg, #DBEAFE, #BFDBFE); }
+  .m-item-img.c3 { background: linear-gradient(135deg, #FCE7F3, #FBCFE8); }
+  .m-item-img.c4 { background: linear-gradient(135deg, #D1FAE5, #A7F3D0); }
+  .m-item-info { padding: 8px 10px; text-align: right; }
+  .m-item-name { font-size: 12px; font-weight: 700; color: #0F172A; }
+  .m-item-price { font-size: 11px; color: #2563EB; font-weight: 700; margin-top: 2px; }
+
+  /* ── Screenshot 3: Loyalty ── */
+  .ss-3 { background: linear-gradient(180deg, #7C3AED, #A78BFA); }
+  .ss-3 .marketing-title { color: #fff; }
+  .ss-3 .marketing-sub { color: rgba(255,255,255,0.85); }
+
+  .screen-loyalty { width: 100%; height: 100%; background: #F8FAFC; overflow: hidden; }
+  .l-header { background: linear-gradient(135deg, #1E3A8A, #2563EB); padding: 44px 20px 24px; text-align: center; border-radius: 0 0 24px 24px; }
+  .l-header h2 { color: #fff; font-size: 18px; font-weight: 800; }
+  .l-header p { color: rgba(255,255,255,0.7); font-size: 12px; margin-top: 4px; }
+  .l-card { background: linear-gradient(135deg, #2563EB, #1E3A8A); margin: -16px 20px 0; border-radius: 16px; padding: 20px; position: relative; z-index: 1; box-shadow: 0 6px 20px rgba(37,99,235,0.3); }
+  .l-card-title { color: rgba(255,255,255,0.7); font-size: 12px; text-align: center; margin-bottom: 14px; }
+  .l-stamps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+  .l-stamp { aspect-ratio: 1; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .l-stamp.filled { background: rgba(255,255,255,0.2); border-color: #fff; }
+  .l-stamp.gift { background: #E8B86D; border-color: #E8B86D; }
+  .l-progress { color: #fff; text-align: center; font-size: 13px; font-weight: 600; margin-top: 14px; }
+  .l-stats { display: flex; gap: 10px; padding: 20px; }
+  .l-stat { flex: 1; background: #fff; border-radius: 12px; padding: 14px; text-align: center; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+  .l-stat-val { font-size: 22px; font-weight: 800; color: #2563EB; }
+  .l-stat-lbl { font-size: 11px; color: #64748B; margin-top: 2px; }
+
+  /* ── Screenshot 4: Deals ── */
+  .ss-4 { background: linear-gradient(180deg, #EC4899, #F472B6); }
+  .ss-4 .marketing-title { color: #fff; }
+  .ss-4 .marketing-sub { color: rgba(255,255,255,0.85); }
+
+  .screen-deals { width: 100%; height: 100%; background: #F8FAFC; overflow: hidden; }
+  .d-header { background: linear-gradient(135deg, #1E3A8A, #2563EB); padding: 44px 20px 20px; text-align: center; border-radius: 0 0 24px 24px; }
+  .d-header h2 { color: #fff; font-size: 18px; font-weight: 800; }
+  .d-card { background: #fff; border-radius: 14px; margin: 12px 16px 0; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .d-img { height: 90px; display: flex; align-items: center; justify-content: center; font-size: 36px; }
+  .d-img.y { background: linear-gradient(135deg, #F59E0B, #D97706); }
+  .d-img.p { background: linear-gradient(135deg, #EC4899, #DB2777); }
+  .d-img.g { background: linear-gradient(135deg, #10B981, #059669); }
+  .d-info { padding: 10px 14px; text-align: right; }
+  .d-title { font-size: 14px; font-weight: 800; color: #0F172A; }
+  .d-desc { font-size: 11px; color: #64748B; margin-top: 3px; line-height: 1.4; }
+  .d-badge { display: inline-block; background: #EFF6FF; color: #2563EB; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; margin-top: 6px; }
+
+  /* ── Screenshot 5: Cart ── */
+  .ss-5 { background: linear-gradient(180deg, #059669, #34D399); }
+  .ss-5 .marketing-title { color: #fff; }
+  .ss-5 .marketing-sub { color: rgba(255,255,255,0.85); }
+
+  .screen-cart { width: 100%; height: 100%; background: #F8FAFC; display: flex; flex-direction: column; overflow: hidden; }
+  .c-header { background: #fff; padding: 44px 16px 12px; text-align: center; border-bottom: 1px solid #E2E8F0; }
+  .c-header h2 { font-size: 16px; font-weight: 700; color: #0F172A; }
+  .c-items { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .c-item { background: #fff; border-radius: 12px; padding: 10px; display: flex; gap: 10px; align-items: center; box-shadow: 0 1px 4px rgba(0,0,0,0.06); direction: rtl; }
+  .c-item-img { width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .c-item-img.b1 { background: linear-gradient(135deg, #FEF3C7, #FDE68A); }
+  .c-item-img.b2 { background: linear-gradient(135deg, #DBEAFE, #BFDBFE); }
+  .c-item-img.b3 { background: linear-gradient(135deg, #FCE7F3, #FBCFE8); }
+  .c-item-info { flex: 1; text-align: right; }
+  .c-item-name { font-size: 13px; font-weight: 700; color: #0F172A; }
+  .c-item-det { font-size: 10px; color: #64748B; }
+  .c-item-price { font-size: 12px; font-weight: 700; color: #2563EB; margin-top: 2px; }
+  .c-footer { background: #fff; padding: 16px; border-top: 1px solid #E2E8F0; }
+  .c-total { display: flex; justify-content: space-between; font-size: 16px; font-weight: 800; color: #0F172A; margin-bottom: 10px; }
+  .c-btn { background: #2563EB; color: #fff; font-size: 16px; font-weight: 800; padding: 14px; border-radius: 12px; text-align: center; }
+
+  /* ── Screenshot 6: Profile ── */
+  .ss-6 { background: linear-gradient(180deg, #0F172A, #1E3A8A); }
+  .ss-6 .marketing-title { color: #fff; }
+  .ss-6 .marketing-sub { color: rgba(255,255,255,0.8); }
+
+  .screen-profile { width: 100%; height: 100%; background: #F8FAFC; overflow: hidden; }
+  .p-hero { background: linear-gradient(135deg, #1E3A8A, #2563EB); padding: 44px 20px 24px; text-align: center; border-radius: 0 0 24px 24px; }
+  .p-avatar { width: 56px; height: 56px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4); margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; color: #fff; }
+  .p-name { font-size: 20px; font-weight: 800; color: #fff; }
+  .p-badge { display: inline-block; background: rgba(255,255,255,0.2); color: #fff; padding: 3px 12px; border-radius: 10px; font-size: 11px; font-weight: 700; margin-top: 4px; }
+  .p-stats { display: flex; background: rgba(255,255,255,0.15); border-radius: 12px; padding: 14px; margin-top: 16px; border: 1px solid rgba(255,255,255,0.15); }
+  .p-stat { flex: 1; text-align: center; }
+  .p-stat-val { font-size: 20px; font-weight: 800; color: #fff; }
+  .p-stat-lbl { font-size: 10px; color: rgba(255,255,255,0.7); }
+  .p-stat-div { width: 1px; background: rgba(255,255,255,0.2); }
+  .p-body { padding: 16px 20px; }
+  .p-row { background: #fff; border-radius: 12px; padding: 14px; display: flex; align-items: center; gap: 10px; margin-bottom: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); direction: rtl; }
+  .p-row-icon { width: 36px; height: 36px; border-radius: 18px; background: #EFF6FF; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .p-row-text { flex: 1; text-align: right; }
+  .p-row-label { font-size: 13px; font-weight: 700; color: #0F172A; }
+  .p-row-desc { font-size: 10px; color: #64748B; margin-top: 1px; }
+
+  .num { position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.5); color: #fff; width: 24px; height: 24px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; z-index: 20; }
+</style>
+</head>
+<body>
+
+<!-- 1. Welcome -->
+<div class="screenshot ss-1">
+  <div class="marketing-top">
+    <div class="marketing-title">ברוכים הבאים<br>להפסקת קפה ☕</div>
+    <div class="marketing-sub">הצטרפו למועדון הלקוחות שלנו</div>
+  </div>
+  <div class="phone-frame">
+    <div class="screen-welcome">
+      <div class="w-logo">☕</div>
+      <div class="w-name">הפסקת קפה</div>
+      <div class="w-tag">הקפה הכי טוב באשקלון</div>
+      <div class="w-perks">
+        <div class="w-perk"><span>הקפה ה-5 עלינו</span><span>☕</span></div>
+        <div class="w-perk"><span>הפתעות ומבצעים בלעדיים</span><span>🎁</span></div>
+        <div class="w-perk"><span>מועדון VIP עם הטבות</span><span>⭐</span></div>
+        <div class="w-perk"><span>מתנת יום הולדת</span><span>✨</span></div>
+      </div>
+      <div class="w-btn">הרשמה / התחברות</div>
+      <div class="w-skip">המשך כאורח</div>
+    </div>
+  </div>
+  <div class="num">1</div>
+</div>
+
+<!-- 2. Menu -->
+<div class="screenshot ss-2">
+  <div class="marketing-top">
+    <div class="marketing-title">תפריט מלא<br>עם הזמנה מראש 📋</div>
+    <div class="marketing-sub">בחרו, התאימו אישית והזמינו</div>
+  </div>
+  <div class="phone-frame">
+    <div class="screen-menu">
+      <div class="m-header"><h2>התפריט שלנו</h2></div>
+      <div class="m-cats">
+        <div class="m-cat active">מאפים</div>
+        <div class="m-cat">משקאות חמים</div>
+        <div class="m-cat">שתייה קרה</div>
+        <div class="m-cat">כריכים</div>
+      </div>
+      <div class="m-grid">
+        <div class="m-item"><div class="m-item-img c1">🥐</div><div class="m-item-info"><div class="m-item-name">קרואסון חמאה</div><div class="m-item-price">₪18</div></div></div>
+        <div class="m-item"><div class="m-item-img c2">🥐</div><div class="m-item-info"><div class="m-item-name">קרואסון שקדים</div><div class="m-item-price">₪18</div></div></div>
+        <div class="m-item"><div class="m-item-img c3">🍩</div><div class="m-item-info"><div class="m-item-name">סינבון קלאסי</div><div class="m-item-price">₪20</div></div></div>
+        <div class="m-item"><div class="m-item-img c4">🧁</div><div class="m-item-info"><div class="m-item-name">מאפה תפוח</div><div class="m-item-price">₪18</div></div></div>
+        <div class="m-item"><div class="m-item-img c1">🍫</div><div class="m-item-info"><div class="m-item-name">פאן שוקולד</div><div class="m-item-price">₪18</div></div></div>
+        <div class="m-item"><div class="m-item-img c3">🫐</div><div class="m-item-info"><div class="m-item-name">קרואסון פטל</div><div class="m-item-price">₪22</div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="num">2</div>
+</div>
+
+<!-- 3. Loyalty -->
+<div class="screenshot ss-3">
+  <div class="marketing-top">
+    <div class="marketing-title">הקפה ה-5 עלינו! 🎁</div>
+    <div class="marketing-sub">צברו חותמות וקבלו מתנות</div>
+  </div>
+  <div class="phone-frame">
+    <div class="screen-loyalty">
+      <div class="l-header"><h2>כרטיס נאמנות</h2><p>הקפה ה-5 עלינו!</p></div>
+      <div class="l-card">
+        <div class="l-card-title">3 מתוך 5 חותמות</div>
+        <div class="l-stamps">
+          <div class="l-stamp filled">☕</div>
+          <div class="l-stamp filled">☕</div>
+          <div class="l-stamp filled">☕</div>
+          <div class="l-stamp"></div>
+          <div class="l-stamp gift">🎁</div>
+        </div>
+        <div class="l-progress">עוד 2 חותמות למתנה!</div>
+      </div>
+      <div class="l-stats">
+        <div class="l-stat"><div class="l-stat-val">12</div><div class="l-stat-lbl">כוסות קפה</div></div>
+        <div class="l-stat"><div class="l-stat-val">2</div><div class="l-stat-lbl">מתנות</div></div>
+        <div class="l-stat"><div class="l-stat-val">כסף</div><div class="l-stat-lbl">דרגת VIP</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="num">3</div>
+</div>
+
+<!-- 4. Deals -->
+<div class="screenshot ss-4">
+  <div class="marketing-top">
+    <div class="marketing-title">מבצעים בלעדיים<br>רק באפליקציה 🏷️</div>
+    <div class="marketing-sub">הפתעות, הנחות ומתנות</div>
+  </div>
+  <div class="phone-frame">
+    <div class="screen-deals">
+      <div class="d-header"><h2>מבצעים והטבות</h2></div>
+      <div class="d-card"><div class="d-img y">☕</div><div class="d-info"><div class="d-title">Happy Hour!</div><div class="d-desc">בין 14:00-16:00 כל משקה שני ב-50% הנחה</div><div class="d-badge">פעיל עכשיו</div></div></div>
+      <div class="d-card"><div class="d-img p">🎂</div><div class="d-info"><div class="d-title">יום הולדת? מגיע לך!</div><div class="d-desc">בחודש יום ההולדת - משקה + מאפה במתנה</div><div class="d-badge">אישי</div></div></div>
+      <div class="d-card"><div class="d-img g">👥</div><div class="d-info"><div class="d-title">הביאו חבר</div><div class="d-desc">הזמינו חבר לאפליקציה וקבלו קפה במתנה</div><div class="d-badge">ללא הגבלה</div></div></div>
+    </div>
+  </div>
+  <div class="num">4</div>
+</div>
+
+<!-- 5. Cart -->
+<div class="screenshot ss-5">
+  <div class="marketing-top">
+    <div class="marketing-title">הזמינו מראש<br>בלי לחכות בתור 🚀</div>
+    <div class="marketing-sub">ההזמנה מחכה לכם מוכנה</div>
+  </div>
+  <div class="phone-frame">
+    <div class="screen-cart">
+      <div class="c-header"><h2>העגלה שלי</h2></div>
+      <div class="c-items">
+        <div class="c-item"><div class="c-item-img b1">☕</div><div class="c-item-info"><div class="c-item-name">קפוצ׳ינו</div><div class="c-item-det">חלב שיבולת שועל · ללא סוכר</div><div class="c-item-price">₪16</div></div></div>
+        <div class="c-item"><div class="c-item-img b2">🥐</div><div class="c-item-info"><div class="c-item-name">קרואסון שקדים x2</div><div class="c-item-det"></div><div class="c-item-price">₪36</div></div></div>
+        <div class="c-item"><div class="c-item-img b3">🍵</div><div class="c-item-info"><div class="c-item-name">לאטה וניל</div><div class="c-item-det">גדול · חלב רגיל</div><div class="c-item-price">₪22</div></div></div>
+      </div>
+      <div class="c-footer">
+        <div class="c-total"><span>₪74</span><span>סה״כ</span></div>
+        <div class="c-btn">הזמן עכשיו</div>
+      </div>
+    </div>
+  </div>
+  <div class="num">5</div>
+</div>
+
+<!-- 6. Profile -->
+<div class="screenshot ss-6">
+  <div class="marketing-top">
+    <div class="marketing-title">הפרופיל שלך<br>הכל במקום אחד 👤</div>
+    <div class="marketing-sub">היסטוריה, הטבות ופרטים</div>
+  </div>
+  <div class="phone-frame">
+    <div class="screen-profile">
+      <div class="p-hero">
+        <div class="p-avatar">נע</div>
+        <div class="p-name">נעם</div>
+        <div class="p-badge">⭐ לקוח כסף</div>
+        <div class="p-stats">
+          <div class="p-stat"><div class="p-stat-val">12</div><div class="p-stat-lbl">כוסות קפה</div></div>
+          <div class="p-stat-div"></div>
+          <div class="p-stat"><div class="p-stat-val">2</div><div class="p-stat-lbl">מתנות</div></div>
+        </div>
+      </div>
+      <div class="p-body">
+        <div class="p-row"><div class="p-row-icon">📋</div><div class="p-row-text"><div class="p-row-label">היסטוריית הזמנות</div><div class="p-row-desc">צפייה בהזמנות קודמות</div></div></div>
+        <div class="p-row"><div class="p-row-icon">🌙</div><div class="p-row-text"><div class="p-row-label">מצב כהה</div></div></div>
+        <div class="p-row"><div class="p-row-icon">📍</div><div class="p-row-text"><div class="p-row-label">נווטו אלינו</div><div class="p-row-desc">טיילת הצפונית, אשקלון</div></div></div>
+        <div class="p-row"><div class="p-row-icon">📞</div><div class="p-row-text"><div class="p-row-label">דברו איתנו</div><div class="p-row-desc">08-1234567</div></div></div>
+        <div class="p-row"><div class="p-row-icon">📜</div><div class="p-row-text"><div class="p-row-label">מדיניות פרטיות</div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="num">6</div>
+</div>
+
+</body>
+</html>

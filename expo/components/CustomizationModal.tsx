@@ -15,6 +15,7 @@ import * as Haptics from 'expo-haptics';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import type { ColorScheme } from '@/constants/colors';
 import { MenuItem, ItemCustomization, MilkType, SugarLevel, DrinkSize, BreadType } from '@/types';
+import { resolveImageSource } from '@/utils/resolveAsset';
 import {
   getCustomizationConfig,
   milkOptions,
@@ -134,7 +135,7 @@ export default function CustomizationModal({ item, visible, onClose }: Props) {
           <ScrollView style={styles.body} showsVerticalScrollIndicator={false}>
             {/* Item preview */}
             <View style={styles.itemPreview}>
-              <Image source={item.image} style={styles.itemImage} contentFit="cover" />
+              <Image source={resolveImageSource(item.image)} style={styles.itemImage} contentFit="cover" />
               <View style={styles.itemInfo}>
                 <Text style={styles.itemName}>{item.name}</Text>
                 <Text style={styles.itemPrice}>{formatPrice(item.price)}</Text>

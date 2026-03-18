@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>App Store Screenshots — הפסקת קפה</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Heebo', sans-serif;
+    background: #0A0A0A;
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    overflow-x: auto;
+  }
+
+  /* ═══════════════════════════════════════════
+     Each .ss is exactly 1290x2796 (6.7" iPhone)
+     Scaled down for preview
+     ═══════════════════════════════════════════ */
+  .ss {
+    width: 1290px;
+    height: 2796px;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+    /* Preview scale */
+    transform: scale(0.333);
+    transform-origin: top left;
+    margin-right: -860px;
+    margin-bottom: -1864px;
+  }
+
+  /* ── Shared: Full-bleed background image ── */
+  .ss .bg-photo {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-size: cover;
+    background-position: center;
+  }
+  .ss .bg-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  /* ── Top marketing copy ── */
+  .top-copy {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 160px 80px 0;
+    width: 100%;
+  }
+  .top-copy .eyebrow {
+    display: inline-block;
+    font-size: 28px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+  .top-copy h1 {
+    font-size: 108px;
+    font-weight: 900;
+    line-height: 1.05;
+    color: #fff;
+    margin-bottom: 28px;
+  }
+  .top-copy h1 .accent {
+    background: linear-gradient(135deg, #D4A04A, #F5D78E, #C8922A);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .top-copy .desc {
+    font-size: 36px;
+    color: rgba(255,255,255,0.55);
+    font-weight: 400;
+    line-height: 1.5;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* ── iPhone 15 Pro Frame ── */
+  .device {
+    position: relative;
+    z-index: 10;
+    width: 740px;
+    margin: 60px auto 0;
+  }
+  .device-frame {
+    width: 100%;
+    aspect-ratio: 393/852;
+    background: #000;
+    border-radius: 100px;
+    border: 10px solid #2A2A2E;
+    overflow: hidden;
+    position: relative;
+    box-shadow:
+      0 40px 100px rgba(0,0,0,0.7),
+      0 0 0 1px rgba(255,255,255,0.08),
+      0 0 200px rgba(212,160,74,0.06);
+  }
+  /* Dynamic Island */
+  .device-frame::before {
+    content: '';
+    position: absolute;
+    top: 20px; left: 50%;
+    transform: translateX(-50%);
+    width: 280px; height: 76px;
+    background: #000;
+    border-radius: 40px;
+    z-index: 50;
+  }
+  /* Status bar */
+  .status-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 110px;
+    z-index: 40;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 30px 50px 0;
+    font-size: 30px;
+    font-weight: 600;
+    color: #fff;
+  }
+  .status-bar .time { z-index: 60; }
+  .status-bar .icons { display: flex; gap: 8px; align-items: center; z-index: 60; font-size: 26px; }
+
+  /* Screen content area */
+  .screen {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  /* ── Bottom pill indicators ── */
+  .bottom-strip {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    z-index: 10;
+    padding: 0 60px 100px;
+  }
+  .bottom-strip .fade-up {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 600px;
+    pointer-events: none;
+  }
+  .pills {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+  }
+  .pill {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 100px;
+    padding: 20px 36px;
+    text-align: center;
+    min-width: 200px;
+  }
+  .pill-val {
+    font-size: 34px;
+    font-weight: 800;
+    color: #fff;
+  }
+  .pill-lbl {
+    font-size: 22px;
+    color: rgba(255,255,255,0.45);
+    font-weight: 500;
+    margin-top: 2px;
+  }
+
+  /* ═══════════════════════════════════════════
+     SCREEN STYLES — Real app mockups
+     ═══════════════════════════════════════════ */
+
+  /* ── SS1: Welcome/Onboarding ── */
+  .scr-welcome {
+    background: linear-gradient(170deg, #1A120C 0%, #2C1810 40%, #1A120C 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 140px 44px 60px;
+    text-align: center;
+  }
+  .scr-welcome .app-logo {
+    width: 160px; height: 160px;
+    border-radius: 40px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .scr-welcome .app-logo img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+  .scr-welcome .brand-name {
+    font-size: 56px;
+    font-weight: 900;
+    color: #F5EDE4;
+    margin-bottom: 6px;
+  }
+  .scr-welcome .tagline {
+    font-size: 28px;
+    color: rgba(245,237,228,0.45);
+    margin-bottom: 52px;
+  }
+  .scr-welcome .perks {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 52px;
+  }
+  .scr-welcome .perk {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    justify-content: flex-end;
+    background: rgba(212,160,74,0.06);
+    border: 1px solid rgba(212,160,74,0.12);
+    border-radius: 20px;
+    padding: 18px 28px;
+  }
+  .scr-welcome .perk-text {
+    font-size: 30px;
+    font-weight: 600;
+    color: #F5EDE4;
+  }
+  .scr-welcome .perk-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: rgba(212,160,74,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .scr-welcome .perk-icon svg { width: 22px; height: 22px; }
+  .scr-welcome .cta-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #D4A04A, #C8922A);
+    color: #1A1210;
+    font-size: 34px;
+    font-weight: 800;
+    padding: 28px;
+    border-radius: 22px;
+    text-align: center;
+    box-shadow: 0 12px 40px rgba(212,160,74,0.3);
+  }
+  .scr-welcome .skip {
+    color: rgba(245,237,228,0.25);
+    font-size: 24px;
+    margin-top: 20px;
+  }
+
+  /* ── SS2: Menu ── */
+  .scr-menu {
+    background: #FAFAFA;
+  }
+  .scr-menu .menu-header {
+    background: linear-gradient(135deg, #1E3A8A, #2563EB);
+    padding: 120px 40px 36px;
+    text-align: center;
+    border-radius: 0 0 44px 44px;
+  }
+  .scr-menu .menu-header h2 {
+    color: #fff;
+    font-size: 40px;
+    font-weight: 800;
+  }
+  .scr-menu .categories {
+    display: flex;
+    gap: 10px;
+    padding: 24px 28px;
+    overflow: hidden;
+  }
+  .scr-menu .cat {
+    padding: 10px 22px;
+    border-radius: 30px;
+    font-size: 24px;
+    font-weight: 700;
+    white-space: nowrap;
+    background: #EFF6FF;
+    color: #2563EB;
+  }
+  .scr-menu .cat.active {
+    background: #2563EB;
+    color: #fff;
+  }
+  .scr-menu .menu-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 8px 24px;
+  }
+  .scr-menu .menu-item {
+    background: #fff;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+  .scr-menu .menu-item-img {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+  }
+  .scr-menu .menu-item-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .scr-menu .menu-item-info {
+    padding: 14px 18px;
+    text-align: right;
+  }
+  .scr-menu .menu-item-name {
+    font-size: 26px;
+    font-weight: 700;
+    color: #0F172A;
+  }
+  .scr-menu .menu-item-price {
+    font-size: 24px;
+    color: #2563EB;
+    font-weight: 700;
+    margin-top: 4px;
+  }
+
+  /* ── SS3: Loyalty ── */
+  .scr-loyalty {
+    background: #FAFAFA;
+  }
+  .scr-loyalty .loyalty-header {
+    background: linear-gradient(135deg, #1E3A8A, #2563EB);
+    padding: 120px 40px 48px;
+    text-align: center;
+    border-radius: 0 0 44px 44px;
+  }
+  .scr-loyalty .loyalty-header h2 {
+    color: #fff;
+    font-size: 40px;
+    font-weight: 800;
+  }
+  .scr-loyalty .loyalty-header p {
+    color: rgba(255,255,255,0.65);
+    font-size: 26px;
+    margin-top: 6px;
+  }
+  .scr-loyalty .stamp-card {
+    background: linear-gradient(135deg, #2563EB, #1E3A8A);
+    margin: -32px 36px 0;
+    border-radius: 36px;
+    padding: 40px;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 20px 60px rgba(37,99,235,0.35);
+  }
+  .scr-loyalty .stamp-label {
+    color: rgba(255,255,255,0.55);
+    font-size: 26px;
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .scr-loyalty .stamps {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+  }
+  .scr-loyalty .stamp {
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 3px solid rgba(255,255,255,0.2);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .scr-loyalty .stamp.filled {
+    border-color: rgba(255,255,255,0.6);
+  }
+  .scr-loyalty .stamp.filled img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .scr-loyalty .stamp.gift {
+    background: linear-gradient(135deg, #D4A04A, #F5D78E);
+    border-color: #D4A04A;
+  }
+  .scr-loyalty .stamp.gift svg { width: 44px; height: 44px; }
+  .scr-loyalty .stamp-progress {
+    color: #fff;
+    text-align: center;
+    font-size: 28px;
+    font-weight: 600;
+    margin-top: 24px;
+  }
+  .scr-loyalty .stats-row {
+    display: flex;
+    gap: 16px;
+    padding: 36px 32px;
+  }
+  .scr-loyalty .stat-card {
+    flex: 1;
+    background: #fff;
+    border-radius: 24px;
+    padding: 28px 16px;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+  .scr-loyalty .stat-val {
+    font-size: 44px;
+    font-weight: 800;
+    color: #2563EB;
+  }
+  .scr-loyalty .stat-lbl {
+    font-size: 22px;
+    color: #64748B;
+    margin-top: 2px;
+  }
+  /* Voucher preview */
+  .scr-loyalty .voucher-preview {
+    margin: 0 32px;
+    background: linear-gradient(135deg, #D4A04A, #C8922A);
+    border-radius: 24px;
+    padding: 28px 32px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    direction: rtl;
+  }
+  .scr-loyalty .voucher-preview .v-icon {
+    width: 72px; height: 72px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .scr-loyalty .voucher-preview .v-icon img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+  .scr-loyalty .voucher-preview .v-text {
+    flex: 1; text-align: right;
+  }
+  .scr-loyalty .voucher-preview .v-title {
+    font-size: 28px; font-weight: 700; color: #fff;
+  }
+  .scr-loyalty .voucher-preview .v-desc {
+    font-size: 22px; color: rgba(255,255,255,0.7); margin-top: 2px;
+  }
+
+  /* ── SS4: Deals ── */
+  .scr-deals {
+    background: #FAFAFA;
+  }
+  .scr-deals .deals-header {
+    background: linear-gradient(135deg, #1E3A8A, #2563EB);
+    padding: 120px 40px 36px;
+    text-align: center;
+    border-radius: 0 0 44px 44px;
+  }
+  .scr-deals .deals-header h2 {
+    color: #fff;
+    font-size: 40px;
+    font-weight: 800;
+  }
+  .scr-deals .deal-card {
+    margin: 20px 28px 0;
+    background: #fff;
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  }
+  .scr-deals .deal-img {
+    width: 100%;
+    height: 180px;
+    overflow: hidden;
+    position: relative;
+  }
+  .scr-deals .deal-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .scr-deals .deal-img .deal-badge {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: #2563EB;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 700;
+    padding: 6px 16px;
+    border-radius: 10px;
+  }
+  .scr-deals .deal-info {
+    padding: 18px 24px;
+    text-align: right;
+  }
+  .scr-deals .deal-title {
+    font-size: 30px;
+    font-weight: 800;
+    color: #0F172A;
+  }
+  .scr-deals .deal-desc {
+    font-size: 22px;
+    color: #64748B;
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  /* ── SS5: Cart ── */
+  .scr-cart {
+    background: #FAFAFA;
+    display: flex;
+    flex-direction: column;
+  }
+  .scr-cart .cart-header {
+    background: #fff;
+    padding: 120px 40px 24px;
+    text-align: center;
+    border-bottom: 1px solid #E2E8F0;
+  }
+  .scr-cart .cart-header h2 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #0F172A;
+  }
+  .scr-cart .cart-items {
+    flex: 1;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .scr-cart .cart-item {
+    background: #fff;
+    border-radius: 22px;
+    padding: 18px;
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    direction: rtl;
+  }
+  .scr-cart .cart-item-img {
+    width: 100px; height: 100px;
+    border-radius: 20px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .scr-cart .cart-item-img img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+  .scr-cart .cart-item-info {
+    flex: 1; text-align: right;
+  }
+  .scr-cart .cart-item-name {
+    font-size: 28px;
+    font-weight: 700;
+    color: #0F172A;
+  }
+  .scr-cart .cart-item-detail {
+    font-size: 20px;
+    color: #94A3B8;
+    margin-top: 2px;
+  }
+  .scr-cart .cart-item-price {
+    font-size: 26px;
+    font-weight: 700;
+    color: #2563EB;
+    margin-top: 6px;
+  }
+  .scr-cart .cart-footer {
+    background: #fff;
+    padding: 28px 32px 40px;
+    border-top: 1px solid #E2E8F0;
+  }
+  .scr-cart .cart-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 38px;
+    font-weight: 800;
+    color: #0F172A;
+    margin-bottom: 20px;
+    direction: rtl;
+  }
+  .scr-cart .cart-discount {
+    display: flex;
+    justify-content: space-between;
+    font-size: 24px;
+    color: #10B981;
+    font-weight: 600;
+    margin-bottom: 16px;
+    direction: rtl;
+  }
+  .scr-cart .cart-cta {
+    background: linear-gradient(135deg, #2563EB, #1E3A8A);
+    color: #fff;
+    font-size: 34px;
+    font-weight: 800;
+    padding: 28px;
+    border-radius: 22px;
+    text-align: center;
+  }
+
+  /* ── SS6: Profile ── */
+  .scr-profile {
+    background: #FAFAFA;
+  }
+  .scr-profile .profile-hero {
+    background: linear-gradient(135deg, #1E3A8A, #2563EB);
+    padding: 120px 36px 44px;
+    text-align: center;
+    border-radius: 0 0 44px 44px;
+  }
+  .scr-profile .avatar {
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    border: 4px solid rgba(255,255,255,0.3);
+    margin: 0 auto 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 44px;
+    font-weight: 800;
+    color: #fff;
+  }
+  .scr-profile .profile-name {
+    font-size: 44px;
+    font-weight: 800;
+    color: #fff;
+  }
+  .scr-profile .tier-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(212,160,74,0.2);
+    border: 1px solid rgba(212,160,74,0.3);
+    color: #F5D78E;
+    padding: 8px 24px;
+    border-radius: 16px;
+    font-size: 22px;
+    font-weight: 700;
+    margin-top: 10px;
+  }
+  .scr-profile .profile-stats {
+    display: flex;
+    background: rgba(255,255,255,0.1);
+    border-radius: 24px;
+    padding: 24px;
+    margin-top: 28px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .scr-profile .p-stat {
+    flex: 1; text-align: center;
+  }
+  .scr-profile .p-stat-val {
+    font-size: 40px; font-weight: 800; color: #fff;
+  }
+  .scr-profile .p-stat-lbl {
+    font-size: 20px; color: rgba(255,255,255,0.5);
+  }
+  .scr-profile .p-stat-div {
+    width: 1px; background: rgba(255,255,255,0.12);
+  }
+  .scr-profile .profile-rows {
+    padding: 24px 28px;
+  }
+  .scr-profile .p-row {
+    background: #fff;
+    border-radius: 20px;
+    padding: 22px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.03);
+    direction: rtl;
+  }
+  .scr-profile .p-row-icon {
+    width: 52px; height: 52px;
+    border-radius: 16px;
+    background: #EFF6FF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .scr-profile .p-row-icon svg { width: 24px; height: 24px; color: #2563EB; }
+  .scr-profile .p-row-text { flex: 1; text-align: right; }
+  .scr-profile .p-row-label {
+    font-size: 26px; font-weight: 700; color: #0F172A;
+  }
+  .scr-profile .p-row-sub {
+    font-size: 20px; color: #94A3B8; margin-top: 1px;
+  }
+  .scr-profile .p-row-arrow {
+    color: #CBD5E1; font-size: 24px;
+  }
+
+  /* ── SVG icon helpers ── */
+  .icon-gold { color: #D4A04A; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════
+     SCREENSHOT 1 — Hero: Brand + Lifestyle
+     Full-bleed product photography background
+     ══════════════════════════════════════════════════════ -->
+<div class="ss" id="ss1">
+  <div class="bg-photo" style="background-image: url('../images/story-full-table.png'); background-position: center 30%;"></div>
+  <div class="bg-overlay" style="background: linear-gradient(180deg, rgba(10,8,6,0.92) 0%, rgba(10,8,6,0.7) 35%, rgba(10,8,6,0.5) 50%, rgba(10,8,6,0.85) 75%, rgba(10,8,6,0.98) 100%);"></div>
+
+  <div class="top-copy">
+    <div class="eyebrow">COFFEE BREAK ASHKELON</div>
+    <h1><span class="accent">הפסקת קפה</span><br>חווית קפה<br>שלמה</h1>
+    <div class="desc">מועדון נאמנות, הזמנה מראש, קופונים בלעדיים<br>והטבות VIP — הכל באפליקציה אחת</div>
+  </div>
+
+  <div class="device">
+    <div class="device-frame">
+      <div class="status-bar">
+        <div class="time">9:41</div>
+        <div class="icons">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M1 1l22 22M16.72 11.06A10.94 10.94 0 0 1 19 12.55M5 12.55a10.94 10.94 0 0 1 5.17-2.39M10.71 5.05A16 16 0 0 1 22.56 9M1.42 9a15.91 15.91 0 0 1 4.7-2.88M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><rect x="1" y="6" width="3" height="12" rx="1"/><rect x="6" y="4" width="3" height="14" rx="1"/><rect x="11" y="2" width="3" height="16" rx="1"/><rect x="16" y="0" width="3" height="18" rx="1"/></svg>
+          <svg width="36" height="18" viewBox="0 0 36 18"><rect x="0.5" y="0.5" width="31" height="17" rx="4" stroke="white" fill="none" stroke-width="1.5"/><rect x="33" y="5" width="3" height="8" rx="1.5" fill="white"/><rect x="3" y="3" width="22" height="12" rx="2.5" fill="#34C759"/></svg>
+        </div>
+      </div>
+      <div class="screen scr-welcome">
+        <div class="app-logo"><img src="../images/icon.png" alt="logo"></div>
+        <div class="brand-name">הפסקת קפה</div>
+        <div class="tagline">הקפה הכי טוב באשקלון</div>
+        <div class="perks">
+          <div class="perk">
+            <div class="perk-text">הקפה ה-5 עלינו</div>
+            <div class="perk-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#D4A04A" stroke-width="2"><path d="M17 8h1a4 4 0 1 1 0 8h-1M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V8zM6 2v4M10 2v4M14 2v4"/></svg></div>
+          </div>
+          <div class="perk">
+            <div class="perk-text">קופונים ומבצעים בלעדיים</div>
+            <div class="perk-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#D4A04A" stroke-width="2"><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-6M12 2v14M5 9l7-7 7 7"/></svg></div>
+          </div>
+          <div class="perk">
+            <div class="perk-text">דרגות VIP עם הנחות קבועות</div>
+            <div class="perk-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#D4A04A" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+          </div>
+          <div class="perk">
+            <div class="perk-text">מתנת יום הולדת מיוחדת</div>
+            <div class="perk-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#D4A04A" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-3-3.87M4 21v-2a4 4 0 0 1 3-3.87M16 3.13a4 4 0 0 1 0 7.75M12 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/></svg></div>
+          </div>
+        </div>
+        <div class="cta-btn">הרשמה / התחברות</div>
+        <div class="skip">המשך כאורח</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-strip">
+    <div class="fade-up" style="background: linear-gradient(transparent, rgba(10,8,6,0.98));"></div>
+    <div class="pills">
+      <div class="pill"><div class="pill-val">24/7</div><div class="pill-lbl">פתוח תמיד</div></div>
+      <div class="pill"><div class="pill-val">100+</div><div class="pill-lbl">פריטים בתפריט</div></div>
+      <div class="pill"><div class="pill-val">VIP</div><div class="pill-lbl">3 דרגות הנחה</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SCREENSHOT 2 — Menu with real product photos
+     ══════════════════════════════════════════════════════ -->
+<div class="ss" id="ss2">
+  <div class="bg-photo" style="background-image: url('../images/products/croissant-butter.png'); background-position: center; filter: blur(80px) saturate(1.2); transform: scale(1.5);"></div>
+  <div class="bg-overlay" style="background: linear-gradient(180deg, rgba(6,10,20,0.95) 0%, rgba(15,25,40,0.88) 40%, rgba(6,10,20,0.92) 75%, rgba(6,10,20,0.99) 100%);"></div>
+
+  <div class="top-copy">
+    <div class="eyebrow">DIGITAL MENU</div>
+    <h1><span class="accent">תפריט שלם</span><br>בלחיצה</h1>
+    <div class="desc">קפה, מאפים, ארוחות בוקר, סנדוויצ'ים וקינוחים<br>עם התאמה אישית והזמנה מראש</div>
+  </div>
+
+  <div class="device">
+    <div class="device-frame">
+      <div class="status-bar">
+        <div class="time">9:41</div>
+        <div class="icons">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><rect x="1" y="6" width="3" height="12" rx="1"/><rect x="6" y="4" width="3" height="14" rx="1"/><rect x="11" y="2" width="3" height="16" rx="1"/><rect x="16" y="0" width="3" height="18" rx="1"/></svg>
+          <svg width="36" height="18" viewBox="0 0 36 18"><rect x="0.5" y="0.5" width="31" height="17" rx="4" stroke="white" fill="none" stroke-width="1.5"/><rect x="33" y="5" width="3" height="8" rx="1.5" fill="white"/><rect x="3" y="3" width="22" height="12" rx="2.5" fill="#34C759"/></svg>
+        </div>
+      </div>
+      <div class="screen scr-menu">
+        <div class="menu-header"><h2>התפריט שלנו</h2></div>
+        <div class="categories">
+          <div class="cat active">מאפים</div>
+          <div class="cat">משקאות חמים</div>
+          <div class="cat">שתייה קרה</div>
+          <div class="cat">כריכים</div>
+        </div>
+        <div class="menu-grid">
+          <div class="menu-item"><div class="menu-item-img"><img src="../images/products/croissant-butter.png" alt=""></div><div class="menu-item-info"><div class="menu-item-name">קרואסון חמאה</div><div class="menu-item-price">₪18</div></div></div>
+          <div class="menu-item"><div class="menu-item-img"><img src="../images/products/croissant-almond.png" alt=""></div><div class="menu-item-info"><div class="menu-item-name">קרואסון שקדים</div><div class="menu-item-price">₪18</div></div></div>
+          <div class="menu-item"><div class="menu-item-img"><img src="../images/products/cinnamon-roll-classic.png" alt=""></div><div class="menu-item-info"><div class="menu-item-name">סינבון קלאסי</div><div class="menu-item-price">₪20</div></div></div>
+          <div class="menu-item"><div class="menu-item-img"><img src="../images/products/pain-au-chocolat.png" alt=""></div><div class="menu-item-info"><div class="menu-item-name">פאן שוקולד</div><div class="menu-item-price">₪18</div></div></div>
+          <div class="menu-item"><div class="menu-item-img"><img src="../images/products/croissant-raspberry.png" alt=""></div><div class="menu-item-info"><div class="menu-item-name">קרואסון פטל</div><div class="menu-item-price">₪22</div></div></div>
+          <div class="menu-item"><div class="menu-item-img"><img src="../images/products/danish-pistachio-cranberry.png" alt=""></div><div class="menu-item-info"><div class="menu-item-name">דניש פיסטוק</div><div class="menu-item-price">₪22</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-strip">
+    <div class="fade-up" style="background: linear-gradient(transparent, rgba(6,10,20,0.99));"></div>
+    <div class="pills">
+      <div class="pill"><div class="pill-val">100+</div><div class="pill-lbl">פריטים</div></div>
+      <div class="pill"><div class="pill-val">התאמה אישית</div><div class="pill-lbl">חלב, סוכר, תוספות</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SCREENSHOT 3 — Loyalty with real coffee stamps
+     ══════════════════════════════════════════════════════ -->
+<div class="ss" id="ss3">
+  <div class="bg-photo" style="background-image: url('../images/products/hafuch-small.png'); background-position: center; filter: blur(80px) saturate(1.3); transform: scale(1.6);"></div>
+  <div class="bg-overlay" style="background: linear-gradient(180deg, rgba(10,8,4,0.94) 0%, rgba(20,14,8,0.85) 40%, rgba(10,8,4,0.92) 75%, rgba(10,8,4,0.99) 100%);"></div>
+
+  <div class="top-copy">
+    <div class="eyebrow">LOYALTY CLUB</div>
+    <h1><span class="accent">הקפה ה-5</span><br>עלינו!</h1>
+    <div class="desc">צברו חותמות דיגיטליות בכל רכישה<br>וקבלו כוסות קפה ומאפים במתנה</div>
+  </div>
+
+  <div class="device">
+    <div class="device-frame">
+      <div class="status-bar">
+        <div class="time">9:41</div>
+        <div class="icons">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><rect x="1" y="6" width="3" height="12" rx="1"/><rect x="6" y="4" width="3" height="14" rx="1"/><rect x="11" y="2" width="3" height="16" rx="1"/><rect x="16" y="0" width="3" height="18" rx="1"/></svg>
+          <svg width="36" height="18" viewBox="0 0 36 18"><rect x="0.5" y="0.5" width="31" height="17" rx="4" stroke="white" fill="none" stroke-width="1.5"/><rect x="33" y="5" width="3" height="8" rx="1.5" fill="white"/><rect x="3" y="3" width="22" height="12" rx="2.5" fill="#34C759"/></svg>
+        </div>
+      </div>
+      <div class="screen scr-loyalty">
+        <div class="loyalty-header"><h2>כרטיס נאמנות</h2><p>הקפה ה-5 עלינו!</p></div>
+        <div class="stamp-card">
+          <div class="stamp-label">3 מתוך 5 חותמות</div>
+          <div class="stamps">
+            <div class="stamp filled"><img src="../images/products/hafuch-small.png" alt=""></div>
+            <div class="stamp filled"><img src="../images/products/espresso.png" alt=""></div>
+            <div class="stamp filled"><img src="../images/products/americano-small.png" alt=""></div>
+            <div class="stamp"></div>
+            <div class="stamp gift"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></div>
+          </div>
+          <div class="stamp-progress">עוד 2 חותמות למתנה!</div>
+        </div>
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-val">12</div><div class="stat-lbl">כוסות קפה</div></div>
+          <div class="stat-card"><div class="stat-val">2</div><div class="stat-lbl">מתנות</div></div>
+          <div class="stat-card"><div class="stat-val">כסף</div><div class="stat-lbl">דרגת VIP</div></div>
+        </div>
+        <div class="voucher-preview">
+          <div class="v-icon"><img src="../images/products/cinnamon-roll-classic.png" alt=""></div>
+          <div class="v-text"><div class="v-title">קופון פעיל: מאפה חינם</div><div class="v-desc">בתוקף עד 30.03.2026</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-strip">
+    <div class="fade-up" style="background: linear-gradient(transparent, rgba(10,8,4,0.99));"></div>
+    <div class="pills">
+      <div class="pill"><div class="pill-val">דיגיטלי</div><div class="pill-lbl">ללא כרטיס פיזי</div></div>
+      <div class="pill"><div class="pill-val">3 דרגות</div><div class="pill-lbl">ברונזה / כסף / זהב</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SCREENSHOT 4 — Deals with real food photography
+     ══════════════════════════════════════════════════════ -->
+<div class="ss" id="ss4">
+  <div class="bg-photo" style="background-image: url('../images/products/tiramisu.png'); background-position: center; filter: blur(80px) saturate(1.2); transform: scale(1.6);"></div>
+  <div class="bg-overlay" style="background: linear-gradient(180deg, rgba(14,6,16,0.95) 0%, rgba(20,10,24,0.88) 40%, rgba(14,6,16,0.93) 75%, rgba(10,6,12,0.99) 100%);"></div>
+
+  <div class="top-copy">
+    <div class="eyebrow">EXCLUSIVE DEALS</div>
+    <h1><span class="accent">מבצעים</span><br>שלא תרצו<br>לפספס</h1>
+    <div class="desc">הפתעות, הנחות ומתנות<br>רק לחברי המועדון</div>
+  </div>
+
+  <div class="device">
+    <div class="device-frame">
+      <div class="status-bar">
+        <div class="time">9:41</div>
+        <div class="icons">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><rect x="1" y="6" width="3" height="12" rx="1"/><rect x="6" y="4" width="3" height="14" rx="1"/><rect x="11" y="2" width="3" height="16" rx="1"/><rect x="16" y="0" width="3" height="18" rx="1"/></svg>
+          <svg width="36" height="18" viewBox="0 0 36 18"><rect x="0.5" y="0.5" width="31" height="17" rx="4" stroke="white" fill="none" stroke-width="1.5"/><rect x="33" y="5" width="3" height="8" rx="1.5" fill="white"/><rect x="3" y="3" width="22" height="12" rx="2.5" fill="#34C759"/></svg>
+        </div>
+      </div>
+      <div class="screen scr-deals">
+        <div class="deals-header"><h2>מבצעים והטבות</h2></div>
+        <div class="deal-card">
+          <div class="deal-img"><img src="../images/products/iced-coffee.png" alt=""><div class="deal-badge">פעיל עכשיו</div></div>
+          <div class="deal-info"><div class="deal-title">Happy Hour!</div><div class="deal-desc">בין 14:00-16:00 כל משקה שני ב-50% הנחה</div></div>
+        </div>
+        <div class="deal-card">
+          <div class="deal-img"><img src="../images/products/tiramisu.png" alt=""><div class="deal-badge">אישי</div></div>
+          <div class="deal-info"><div class="deal-title">יום הולדת? מגיע לך!</div><div class="deal-desc">בחודש יום ההולדת — משקה + מאפה במתנה</div></div>
+        </div>
+        <div class="deal-card">
+          <div class="deal-img"><img src="../images/products/hafuch-large.png" alt=""><div class="deal-badge">ללא הגבלה</div></div>
+          <div class="deal-info"><div class="deal-title">הביאו חבר</div><div class="deal-desc">הזמינו חבר וקבלו קפה במתנה</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-strip">
+    <div class="fade-up" style="background: linear-gradient(transparent, rgba(10,6,12,0.99));"></div>
+    <div class="pills">
+      <div class="pill"><div class="pill-val">50%</div><div class="pill-lbl">Happy Hour</div></div>
+      <div class="pill"><div class="pill-val">מתנה</div><div class="pill-lbl">יום הולדת</div></div>
+      <div class="pill"><div class="pill-val">הפנייה</div><div class="pill-lbl">קפה חינם</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SCREENSHOT 5 — Cart/Order with real photos
+     ══════════════════════════════════════════════════════ -->
+<div class="ss" id="ss5">
+  <div class="bg-photo" style="background-image: url('../images/products/sandwich-avocado.png'); background-position: center; filter: blur(80px) saturate(1.2); transform: scale(1.6);"></div>
+  <div class="bg-overlay" style="background: linear-gradient(180deg, rgba(6,14,10,0.95) 0%, rgba(8,18,12,0.88) 40%, rgba(6,14,10,0.93) 75%, rgba(4,10,6,0.99) 100%);"></div>
+
+  <div class="top-copy">
+    <div class="eyebrow">PRE-ORDER</div>
+    <h1><span class="accent">הזמינו</span><br>ישירות<br>מהאפליקציה</h1>
+    <div class="desc">ההזמנה מחכה לכם מוכנה בחנות<br>בלי לחכות, בלי תור</div>
+  </div>
+
+  <div class="device">
+    <div class="device-frame">
+      <div class="status-bar">
+        <div class="time">9:41</div>
+        <div class="icons">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><rect x="1" y="6" width="3" height="12" rx="1"/><rect x="6" y="4" width="3" height="14" rx="1"/><rect x="11" y="2" width="3" height="16" rx="1"/><rect x="16" y="0" width="3" height="18" rx="1"/></svg>
+          <svg width="36" height="18" viewBox="0 0 36 18"><rect x="0.5" y="0.5" width="31" height="17" rx="4" stroke="white" fill="none" stroke-width="1.5"/><rect x="33" y="5" width="3" height="8" rx="1.5" fill="white"/><rect x="3" y="3" width="22" height="12" rx="2.5" fill="#34C759"/></svg>
+        </div>
+      </div>
+      <div class="screen scr-cart">
+        <div class="cart-header"><h2>העגלה שלי</h2></div>
+        <div class="cart-items">
+          <div class="cart-item">
+            <div class="cart-item-img"><img src="../images/products/hafuch-small.png" alt=""></div>
+            <div class="cart-item-info">
+              <div class="cart-item-name">קפה הפוך</div>
+              <div class="cart-item-detail">חלב שיבולת שועל, ללא סוכר</div>
+              <div class="cart-item-price">₪16</div>
+            </div>
+          </div>
+          <div class="cart-item">
+            <div class="cart-item-img"><img src="../images/products/croissant-almond.png" alt=""></div>
+            <div class="cart-item-info">
+              <div class="cart-item-name">קרואסון שקדים x2</div>
+              <div class="cart-item-detail"></div>
+              <div class="cart-item-price">₪36</div>
+            </div>
+          </div>
+          <div class="cart-item">
+            <div class="cart-item-img"><img src="../images/products/iced-coffee.png" alt=""></div>
+            <div class="cart-item-info">
+              <div class="cart-item-name">אייס קפה</div>
+              <div class="cart-item-detail">גדול, חלב רגיל</div>
+              <div class="cart-item-price">₪22</div>
+            </div>
+          </div>
+          <div class="cart-item">
+            <div class="cart-item-img"><img src="../images/products/sandwich-avocado.png" alt=""></div>
+            <div class="cart-item-info">
+              <div class="cart-item-name">כריך אבוקדו</div>
+              <div class="cart-item-detail">לחם מחמצת</div>
+              <div class="cart-item-price">₪38</div>
+            </div>
+          </div>
+        </div>
+        <div class="cart-footer">
+          <div class="cart-discount"><span>הנחת VIP כסף (5%)</span><span>-₪5.60</span></div>
+          <div class="cart-total"><span>סה"כ</span><span>₪106.40</span></div>
+          <div class="cart-cta">לתשלום ואיסוף</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-strip">
+    <div class="fade-up" style="background: linear-gradient(transparent, rgba(4,10,6,0.99));"></div>
+    <div class="pills">
+      <div class="pill"><div class="pill-val">מאובטח</div><div class="pill-lbl">תשלום PCI DSS</div></div>
+      <div class="pill"><div class="pill-val">מהיר</div><div class="pill-lbl">מוכן לאיסוף</div></div>
+      <div class="pill"><div class="pill-val">VIP</div><div class="pill-lbl">הנחה אוטומטית</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     SCREENSHOT 6 — Profile & VIP Tiers
+     ══════════════════════════════════════════════════════ -->
+<div class="ss" id="ss6">
+  <div class="bg-photo" style="background-image: url('../images/story-full-table.png'); background-position: center 70%; filter: blur(60px) saturate(0.8); transform: scale(1.4);"></div>
+  <div class="bg-overlay" style="background: linear-gradient(180deg, rgba(8,8,16,0.95) 0%, rgba(12,12,24,0.88) 40%, rgba(8,8,16,0.93) 75%, rgba(6,6,12,0.99) 100%);"></div>
+
+  <div class="top-copy">
+    <div class="eyebrow">YOUR PROFILE</div>
+    <h1><span class="accent">הכל</span><br>במקום אחד</h1>
+    <div class="desc">היסטוריה, הטבות, הגדרות<br>והמעמד שלכם במועדון</div>
+  </div>
+
+  <div class="device">
+    <div class="device-frame">
+      <div class="status-bar">
+        <div class="time">9:41</div>
+        <div class="icons">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><rect x="1" y="6" width="3" height="12" rx="1"/><rect x="6" y="4" width="3" height="14" rx="1"/><rect x="11" y="2" width="3" height="16" rx="1"/><rect x="16" y="0" width="3" height="18" rx="1"/></svg>
+          <svg width="36" height="18" viewBox="0 0 36 18"><rect x="0.5" y="0.5" width="31" height="17" rx="4" stroke="white" fill="none" stroke-width="1.5"/><rect x="33" y="5" width="3" height="8" rx="1.5" fill="white"/><rect x="3" y="3" width="22" height="12" rx="2.5" fill="#34C759"/></svg>
+        </div>
+      </div>
+      <div class="screen scr-profile">
+        <div class="profile-hero">
+          <div class="avatar">נע</div>
+          <div class="profile-name">נעם</div>
+          <div class="tier-badge">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#F5D78E"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            לקוח כסף — 5% הנחה קבועה
+          </div>
+          <div class="profile-stats">
+            <div class="p-stat"><div class="p-stat-val">12</div><div class="p-stat-lbl">כוסות קפה</div></div>
+            <div class="p-stat-div"></div>
+            <div class="p-stat"><div class="p-stat-val">2</div><div class="p-stat-lbl">מתנות</div></div>
+            <div class="p-stat-div"></div>
+            <div class="p-stat"><div class="p-stat-val">5</div><div class="p-stat-lbl">ימים ברצף</div></div>
+          </div>
+        </div>
+        <div class="profile-rows">
+          <div class="p-row">
+            <div class="p-row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2M9 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M9 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"/></svg></div>
+            <div class="p-row-text"><div class="p-row-label">היסטוריית הזמנות</div><div class="p-row-sub">צפייה בהזמנות קודמות</div></div>
+            <div class="p-row-arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div>
+          </div>
+          <div class="p-row">
+            <div class="p-row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+            <div class="p-row-text"><div class="p-row-label">הקופונים שלי</div><div class="p-row-sub">1 קופון פעיל</div></div>
+            <div class="p-row-arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div>
+          </div>
+          <div class="p-row">
+            <div class="p-row-icon" style="background: #FEF3C7;"><svg viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+            <div class="p-row-text"><div class="p-row-label">דרגת VIP</div><div class="p-row-sub">כסף — עוד 8 רכישות לזהב</div></div>
+            <div class="p-row-arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div>
+          </div>
+          <div class="p-row">
+            <div class="p-row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+            <div class="p-row-text"><div class="p-row-label">נווטו אלינו</div><div class="p-row-sub">טיילת הצפונית, אשקלון</div></div>
+            <div class="p-row-arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div>
+          </div>
+          <div class="p-row">
+            <div class="p-row-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+            <div class="p-row-text"><div class="p-row-label">הזמינו חברים</div><div class="p-row-sub">שתפו וקבלו קפה חינם</div></div>
+            <div class="p-row-arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-strip">
+    <div class="fade-up" style="background: linear-gradient(transparent, rgba(6,6,12,0.99));"></div>
+    <div class="pills">
+      <div class="pill"><div class="pill-val">WhatsApp</div><div class="pill-lbl">אימות מאובטח</div></div>
+      <div class="pill"><div class="pill-val">מצב כהה</div><div class="pill-lbl">עיצוב מותאם</div></div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

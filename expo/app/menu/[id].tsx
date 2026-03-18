@@ -9,6 +9,7 @@ import { menuItems } from '@/data/menu';
 import { formatPrice } from '@/utils/formatPrice';
 import FavoriteButton from '@/components/FavoriteButton';
 import CustomizationModal from '@/components/CustomizationModal';
+import { resolveImageSource } from '@/utils/resolveAsset';
 
 export default function MenuItemDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -30,7 +31,7 @@ export default function MenuItemDetail() {
       <Stack.Screen options={{ title: item.name }} />
       <ScrollView style={styles.wrapper} showsVerticalScrollIndicator={false}>
         <View style={styles.imageContainer}>
-          <Image source={typeof item.image === 'number' ? item.image : { uri: item.image }} style={styles.image} contentFit="cover" />
+          <Image source={resolveImageSource(item.image)} style={styles.image} contentFit="cover" />
           <View style={styles.favoriteBtn}>
             <FavoriteButton itemId={item.id} size={24} />
           </View>

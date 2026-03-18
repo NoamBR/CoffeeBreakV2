@@ -8,9 +8,9 @@
  */
 
 import { supabase } from '@/lib/supabase';
-import { getOrCreateDeviceId } from '@/lib/deviceId';
+import { getEnhancedFingerprint, getOrCreateDeviceId } from '@/lib/deviceId';
 
-export const TOKEN_ROTATE_INTERVAL = 60_000; // 60 seconds
+export const TOKEN_ROTATE_INTERVAL = 30_000; // 30 seconds — tightened from 60s to reduce replay window
 
 // ─── Server-side token generation ──────────────────────────────────
 
@@ -20,12 +20,18 @@ export const TOKEN_ROTATE_INTERVAL = 60_000; // 60 seconds
  * Includes device fingerprint for anti-screenshot binding.
  */
 export async function generateTokenizedPayload(voucherId: string): Promise<string> {
-  // Include device fingerprint so the server can bind the token to this device
+  // Include enhanced device fingerprint (hardware signals + random ID)
+  // so the server can bind the token to this specific device
   let deviceFingerprint: string | undefined;
   try {
-    deviceFingerprint = await getOrCreateDeviceId();
+    deviceFingerprint = await getEnhancedFingerprint();
   } catch {
-    // If device ID unavailable, proceed without it (server will still work)
+    // Fallback to basic device ID if enhanced fingerprint fails
+    try {
+      deviceFingerprint = await getOrCreateDeviceId();
+    } catch {
+      // If device ID unavailable, proceed without it (server will still work)
+    }
   }
 
   const { data, error } = await supabase.functions.invoke('generate-voucher-token', {

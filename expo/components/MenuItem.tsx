@@ -10,6 +10,7 @@ import { MenuItem as MenuItemType } from '@/types';
 import { formatPrice } from '@/utils/formatPrice';
 import { useCartStore } from '@/stores/cartStore';
 import FavoriteButton from '@/components/FavoriteButton';
+import { resolveImageSource } from '@/utils/resolveAsset';
 
 type Props = {
   item: MenuItemType;
@@ -76,7 +77,7 @@ export default function MenuItemCard({ item }: Props) {
       onPress={() => router.push(`/menu/${item.id}`)}
     >
       <View style={styles.imageContainer}>
-        <Image source={typeof item.image === 'number' ? item.image : { uri: item.image }} style={styles.image} contentFit="cover" />
+        <Image source={resolveImageSource(item.image)} style={styles.image} contentFit="cover" />
         <View style={styles.favoriteBtn}>
           <FavoriteButton itemId={item.id} size={14} compact />
         </View>
