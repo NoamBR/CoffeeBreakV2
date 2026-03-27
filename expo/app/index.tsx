@@ -1,55 +1,36 @@
-import { useEffect, useState } from "react";
-import { View, ActivityIndicator, StyleSheet } from "react-native";
-import { useRouter } from "expo-router";
-import { useThemeColors } from "@/hooks/useThemeColors";
-import type { ColorScheme } from "@/constants/colors";
-import { useUserStore } from "@/stores/userStore";
+import { StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function Index() {
-  const router = useRouter();
-  const [ready, setReady] = useState(false);
-  const colors = useThemeColors();
-  const styles = getStyles(colors);
-
-  useEffect(() => {
-    // Wait for Zustand to hydrate from AsyncStorage
-    const unsub = useUserStore.persist.onFinishHydration(() => {
-      setReady(true);
-    });
-
-    // If already hydrated (sync storage or second render)
-    if (useUserStore.persist.hasHydrated()) {
-      setReady(true);
-    }
-
-    return () => {
-      unsub();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!ready) return;
-
-    const { isOnboarded } = useUserStore.getState();
-    if (isOnboarded) {
-      router.replace("/(tabs)");
-    } else {
-      router.replace("/onboarding");
-    }
-  }, [ready]);
-
+export default function HomeScreen() {
   return (
-    <View style={styles.container}>
-      <ActivityIndicator size="large" color={colors.primary} />
+    <View style={styles.wrapper}>
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.title}>Welcome</Text>
+        <Text style={styles.subtitle}>Your blank app is ready.</Text>
+      </SafeAreaView>
     </View>
   );
 }
 
-const getStyles = (colors: ColorScheme) => StyleSheet.create({
+const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
   container: {
     flex: 1,
-    backgroundColor: colors.background,
     alignItems: "center",
     justifyContent: "center",
+    gap: 8,
+    paddingHorizontal: 24,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "700" as const,
+    color: "#1a1a1a",
+  },
+  subtitle: {
+    fontSize: 16,
+    color: "#888",
   },
 });

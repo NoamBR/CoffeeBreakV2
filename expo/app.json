@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "הפסקת קפה",
+    "name": "Blank App",
     "slug": "eq3spc2uk0hsq0tnzflzk",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -11,7 +11,7 @@
     "splash": {
       "image": "./assets/images/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#FFFFFF"
+      "backgroundColor": "#ffffff"
     },
     "ios": {
       "supportsTablet": false,
@@ -20,7 +20,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+        "backgroundColor": "#ffffff"
       },
       "package": "app.rork.eq3spc2uk0hsq0tnzflzk"
     },
